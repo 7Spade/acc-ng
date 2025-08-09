@@ -125,7 +125,7 @@ export class TabService {
       '/dashboard/contract-management': { title: '合約管理', icon: 'file-text', closable: true },
       '/dashboard/task-management': { title: '任務管理', icon: 'check-square', closable: true },
       '/dashboard/budget-management': { title: '預算管理', icon: 'dollar', closable: true },
-      '/dashboard/business-partner': { title: '業務夥伴', icon: 'user', closable: true }
+      '/dashboard/business-partner': { title: '合作夥伴', icon: 'user', closable: true }
     };
 
     return routeMap[url] || { title: '新頁面', closable: true };
