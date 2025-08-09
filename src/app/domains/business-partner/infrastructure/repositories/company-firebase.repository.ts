@@ -27,38 +27,42 @@ export class CompanyFirebaseRepository implements CompanyRepository {
     );
   }
 
-  create(company: Company): Observable<Company> {
-    const companiesRef = collection(this.firestore, this.collectionName);
-    const data = company.toPlainObject();
-    delete data['id']; // Let Firestore generate the ID
+  save(company: Company): Observable<Company> {
+    const isNewCompany = !company.id || company.id === '';
 
-    return from(addDoc(companiesRef, data as Record<string, unknown>)).pipe(
-      map(
-        docRef =>
-          new Company(
-            docRef.id,
-            data['companyName'] as string,
-            data['businessRegistrationNumber'] as string,
-            data['address'] as string,
-            data['businessPhone'] as string,
-            data['status'] as string,
-            data['riskLevel'] as string,
-            (data['fax'] as string) || '',
-            (data['website'] as string) || '',
-            (data['contacts'] as Contact[]) || [],
-            new Date(data['createdAt'] as string),
-            new Date(data['updatedAt'] as string)
-          )
-      )
-    );
-  }
+    if (isNewCompany) {
+      // Create new
+      const companiesRef = collection(this.firestore, this.collectionName);
+      const data = company.toPlainObject();
+      delete data['id'];
 
-  update(company: Company): Observable<Company> {
-    const docRef = doc(this.firestore, this.collectionName, company.id);
-    const data = company.toPlainObject();
-    delete data['id'];
+      return from(addDoc(companiesRef, data)).pipe(
+        map(
+          docRef =>
+            new Company(
+              docRef.id,
+              company.companyName,
+              company.businessRegistrationNumber,
+              company.address,
+              company.businessPhone,
+              company.status,
+              company.riskLevel,
+              company.fax,
+              company.website,
+              company.contacts,
+              company.createdAt,
+              new Date()
+            )
+        )
+      );
+    } else {
+      // Update existing
+      const docRef = doc(this.firestore, this.collectionName, company.id);
+      const data = company.toPlainObject();
+      delete data['id'];
 
-    return from(updateDoc(docRef, data as Record<string, unknown>)).pipe(map(() => company));
+      return from(updateDoc(docRef, data)).pipe(map(() => company));
+    }
   }
 
   delete(id: string): Observable<void> {
