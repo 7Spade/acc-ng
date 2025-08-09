@@ -56,7 +56,7 @@
               "i18n": "menu.dashboard.budget-management"
             },
             {
-              "text": "業務夥伴",
+              "text": "合作夥伴",
               "link": "/dashboard/business-partner",
               "i18n": "menu.dashboard.business-partner"
             }
