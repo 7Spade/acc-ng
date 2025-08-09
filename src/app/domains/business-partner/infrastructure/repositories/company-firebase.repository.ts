@@ -63,7 +63,7 @@ export class CompanyFirebaseRepository implements CompanyRepository {
     const data = company.toPlainObject();
     delete data['id'];
 
-    return from(updateDoc(docRef, data as Record<string, unknown>)).pipe(map(() => company));
+    return from(updateDoc(docRef, data)).pipe(map(() => company));
   }
 
   delete(id: string): Observable<void> {

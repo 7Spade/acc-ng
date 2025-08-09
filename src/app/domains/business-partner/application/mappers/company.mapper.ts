@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Company } from '../../domain/entities/company.entity';
 import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
 import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
-import { CompanyResponseDto, CreateCompanyDto, UpdateCompanyDto, ContactDto } from '../dto/company.dto';
+import { CompanyResponseDto, CreateCompanyDto, UpdateCompanyDto } from '../dto/company.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +24,16 @@ export class CompanyMapper {
       fax: company.fax,
       website: company.website,
       contacts: company.contacts,
-      createdAt: company.createdAt,
-      updatedAt: company.updatedAt
+      createdAt: company.createdAt.toISOString(),
+      updatedAt: company.updatedAt.toISOString()
     };
+  }
+
+  /**
+   * 將 Company 實體陣列轉換為 CompanyResponseDto 陣列
+   */
+  toResponseDtoList(companies: Company[]): CompanyResponseDto[] {
+    return companies.map(company => this.toResponseDto(company));
   }
 
   /**
@@ -48,7 +55,7 @@ export class CompanyMapper {
   /**
    * 將表單資料轉換為 CreateCompanyDto
    */
-  toCreateCompanyDto(formValue: any): CreateCompanyDto {
+  toCreateCompanyDto(formValue: Record<string, unknown>): CreateCompanyDto {
     return {
       companyName: formValue.companyName,
       businessRegistrationNumber: formValue.businessRegistrationNumber,
@@ -64,7 +71,7 @@ export class CompanyMapper {
   /**
    * 將表單資料轉換為 UpdateCompanyDto
    */
-  toUpdateCompanyDto(formValue: any): UpdateCompanyDto {
+  toUpdateCompanyDto(formValue: Record<string, unknown>): UpdateCompanyDto {
     return {
       companyName: formValue.companyName,
       businessRegistrationNumber: formValue.businessRegistrationNumber,
