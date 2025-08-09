@@ -1,5 +1,6 @@
+
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -8,8 +9,6 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzStepsModule } from 'ng-zorro-antd/steps';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 
@@ -22,10 +21,6 @@ export interface PaymentWorkflowTransition {
   comment?: string;
 }
 
-/**
- * 請款工作流程狀態機組件
- * 極簡設計，使用 ng-zorro-antd 組件
- */
 @Component({
   selector: 'app-payment-workflow',
   standalone: true,
@@ -35,44 +30,46 @@ export interface PaymentWorkflowTransition {
     NzModalModule,
     NzButtonModule,
     NzTagModule,
-    NzStepsModule,
     NzTimelineModule,
     NzInputModule,
-    NzSelectModule,
     NzFormModule,
     NzIconModule,
     NzDividerModule
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <nz-modal [(nzVisible)]="visible" nzTitle="請款工作流程狀態" nzWidth="700px" [nzFooter]="null" (nzOnCancel)="onCancel()">
+    <nz-modal 
+      [(nzVisible)]="visible" 
+      nzTitle="請款工作流程狀態" 
+      nzWidth="700px" 
+      [nzFooter]="null" 
+      (nzOnCancel)="close()"
+    >
       <ng-container *nzModalContent>
         <div class="workflow-container">
-          <!-- 當前狀態顯示 -->
+          <!-- 當前狀態 -->
           <div class="current-state-section">
             <h4>當前狀態</h4>
-            <div class="current-state">
-              <nz-tag [nzColor]="workflowState?.getStateColor() || 'default'" class="state-tag">
-                <span nz-icon [nzType]="getStateIcon()"></span>
-                {{ workflowState?.getStateDisplayName() || 'Unknown' }}
-              </nz-tag>
-            </div>
+            <nz-tag [nzColor]="currentStateColor()" class="state-tag">
+              <span nz-icon [nzType]="currentStateIcon()"></span>
+              {{ currentStateName() }}
+            </nz-tag>
           </div>
 
           <nz-divider></nz-divider>
 
           <!-- 可用轉換 -->
-          <div class="transitions-section" *ngIf="workflowState && !workflowState.isFinalState()">
+          <div class="transitions-section" *ngIf="!isFinalState()">
             <h4>可執行操作</h4>
             <div class="transition-options">
               <div
-                *ngFor="let transition of workflowState.availableTransitions"
+                *ngFor="let transition of availableTransitions()"
                 class="transition-option"
                 [class.selected]="selectedTransition() === transition"
                 (click)="selectTransition(transition)"
               >
-                <nz-tag [nzColor]="workflowState.getStateColor(transition)">
-                  {{ workflowState.getStateDisplayName(transition) }}
+                <nz-tag [nzColor]="getStateColor(transition)">
+                  {{ getStateName(transition) }}
                 </nz-tag>
               </div>
             </div>
@@ -83,21 +80,25 @@ export interface PaymentWorkflowTransition {
                 <nz-form-item>
                   <nz-form-label>操作人員</nz-form-label>
                   <nz-form-control>
-                    <input nz-input [(ngModel)]="transitionOperator" placeholder="請輸入操作人員姓名" />
+                    <input nz-input [(ngModel)]="operator" placeholder="請輸入操作人員姓名" />
                   </nz-form-control>
                 </nz-form-item>
 
                 <nz-form-item>
                   <nz-form-label>備註</nz-form-label>
                   <nz-form-control>
-                    <textarea nz-input [(ngModel)]="transitionComment" placeholder="請輸入操作備註（選填）" rows="3"> </textarea>
+                    <textarea nz-input [(ngModel)]="comment" placeholder="請輸入操作備註（選填）" rows="3"></textarea>
                   </nz-form-control>
                 </nz-form-item>
 
                 <nz-form-item>
                   <nz-form-control>
-                    <button nz-button nzType="primary" [nzLoading]="isSubmitting()" (click)="executeTransition()"> 執行狀態轉換 </button>
-                    <button nz-button nzType="default" class="ml-2" (click)="cancelTransition()"> 取消 </button>
+                    <button nz-button nzType="primary" [nzLoading]="isSubmitting()" (click)="executeTransition()">
+                      執行狀態轉換
+                    </button>
+                    <button nz-button nzType="default" class="ml-2" (click)="cancelTransition()">
+                      取消
+                    </button>
                   </nz-form-control>
                 </nz-form-item>
               </form>
@@ -105,7 +106,7 @@ export interface PaymentWorkflowTransition {
           </div>
 
           <!-- 終結狀態提示 -->
-          <div class="final-state-notice" *ngIf="workflowState?.isFinalState()">
+          <div class="final-state-notice" *ngIf="isFinalState()">
             <nz-tag nzColor="blue">
               <span nz-icon nzType="info-circle"></span>
               此狀態為終結狀態，無法進行進一步操作
@@ -119,13 +120,13 @@ export interface PaymentWorkflowTransition {
             <h4>狀態歷史</h4>
             <nz-timeline>
               <nz-timeline-item
-                *ngFor="let history of workflowState?.stateHistory; let i = index"
-                [nzColor]="workflowState?.getStateColor(history.state) || 'default'"
+                *ngFor="let history of stateHistory()"
+                [nzColor]="getStateColor(history.state)"
               >
                 <div class="history-item">
                   <div class="history-header">
-                    <nz-tag [nzColor]="workflowState?.getStateColor(history.state) || 'default'">
-                      {{ workflowState?.getStateDisplayName(history.state) || history.state }}
+                    <nz-tag [nzColor]="getStateColor(history.state)">
+                      {{ getStateName(history.state) }}
                     </nz-tag>
                     <span class="history-time">
                       {{ history.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}
@@ -157,11 +158,6 @@ export interface PaymentWorkflowTransition {
         color: #262626;
       }
 
-      .current-state {
-        display: flex;
-        align-items: center;
-      }
-
       .state-tag {
         font-size: 14px;
         padding: 4px 12px;
@@ -187,6 +183,7 @@ export interface PaymentWorkflowTransition {
       }
 
       .transition-option:hover {
+        background-color: #f5f5f5;
       }
 
       .transition-option.selected {
@@ -195,6 +192,7 @@ export interface PaymentWorkflowTransition {
 
       .transition-form {
         padding: 16px;
+        background-color: #fafafa;
         border-radius: 6px;
         margin-top: 16px;
       }
@@ -202,6 +200,7 @@ export interface PaymentWorkflowTransition {
       .final-state-notice {
         text-align: center;
         padding: 16px;
+        background-color: #f6ffed;
         border-radius: 6px;
       }
 
@@ -238,10 +237,6 @@ export interface PaymentWorkflowTransition {
       .ml-2 {
         margin-left: 8px;
       }
-
-      ::ng-deep .ant-timeline-item-content {
-        margin-left: 20px;
-      }
     `
   ]
 })
@@ -253,107 +248,107 @@ export class PaymentWorkflowComponent {
   @Output() readonly visibleChange = new EventEmitter<boolean>();
   @Output() readonly stateTransition = new EventEmitter<PaymentWorkflowTransition>();
 
-  // 組件狀態
-  private readonly selectedTransitionSignal = signal<PaymentWorkflowStateEnum | null>(null);
-  private readonly isSubmittingSignal = signal(false);
-
   private readonly message = inject(NzMessageService);
 
-  transitionOperator = '';
-  transitionComment = '';
+  // 簡化狀態管理
+  readonly selectedTransition = signal<PaymentWorkflowStateEnum | null>(null);
+  readonly isSubmitting = signal(false);
 
-  constructor() {}
+  operator = '';
+  comment = '';
 
-  // Computed
-  readonly selectedTransition = this.selectedTransitionSignal.asReadonly();
-  readonly isSubmitting = this.isSubmittingSignal.asReadonly();
+  // 狀態圖標映射
+  private readonly stateIcons: Record<PaymentWorkflowStateEnum, string> = {
+    [PaymentWorkflowStateEnum.Draft]: 'edit',
+    [PaymentWorkflowStateEnum.Submitted]: 'upload',
+    [PaymentWorkflowStateEnum.Reviewing]: 'eye',
+    [PaymentWorkflowStateEnum.Approved]: 'check-circle',
+    [PaymentWorkflowStateEnum.Rejected]: 'close-circle',
+    [PaymentWorkflowStateEnum.Processing]: 'loading',
+    [PaymentWorkflowStateEnum.Completed]: 'check',
+    [PaymentWorkflowStateEnum.Cancelled]: 'stop'
+  };
 
-  /**
-   * 選擇轉換狀態
-   */
+  // Computed properties
+  readonly currentStateName = computed(() => 
+    this.workflowState?.getStateDisplayName() || 'Unknown'
+  );
+
+  readonly currentStateColor = computed(() => 
+    this.workflowState?.getStateColor() || 'default'
+  );
+
+  readonly currentStateIcon = computed(() => 
+    this.stateIcons[this.workflowState?.currentState || PaymentWorkflowStateEnum.Draft] || 'question'
+  );
+
+  readonly isFinalState = computed(() => 
+    this.workflowState?.isFinalState() || false
+  );
+
+  readonly availableTransitions = computed(() => 
+    this.workflowState?.availableTransitions || []
+  );
+
+  readonly stateHistory = computed(() => 
+    this.workflowState?.stateHistory || []
+  );
+
   selectTransition(transition: PaymentWorkflowStateEnum): void {
-    this.selectedTransitionSignal.set(transition);
-    this.transitionOperator = '';
-    this.transitionComment = '';
+    this.selectedTransition.set(transition);
+    this.operator = '';
+    this.comment = '';
   }
 
-  /**
-   * 取消轉換
-   */
   cancelTransition(): void {
-    this.selectedTransitionSignal.set(null);
-    this.transitionOperator = '';
-    this.transitionComment = '';
+    this.selectedTransition.set(null);
+    this.operator = '';
+    this.comment = '';
   }
 
-  /**
-   * 執行狀態轉換
-   */
   executeTransition(): void {
     const selectedState = this.selectedTransition();
     if (!selectedState || !this.workflowState) return;
 
-    if (!this.transitionOperator.trim()) {
+    if (!this.operator.trim()) {
       this.message.error('請輸入操作人員');
       return;
     }
 
-    // 檢查是否可以轉換到目標狀態
     if (!this.workflowState.canTransitionTo(selectedState)) {
       this.message.error('無法轉換到此狀態');
       return;
     }
 
-    this.isSubmittingSignal.set(true);
+    this.isSubmitting.set(true);
 
-    try {
-      // 模擬 API 調用
-      setTimeout(() => {
-        this.stateTransition.emit({
-          companyId: this.companyId,
-          newState: selectedState,
-          operator: this.transitionOperator.trim(),
-          comment: this.transitionComment.trim() || undefined
-        });
+    // 模擬 API 調用
+    setTimeout(() => {
+      this.stateTransition.emit({
+        companyId: this.companyId,
+        newState: selectedState,
+        operator: this.operator.trim(),
+        comment: this.comment.trim() || undefined
+      });
 
-        this.message.success('狀態轉換成功');
-        this.cancelTransition();
-        this.onCancel();
-        this.isSubmittingSignal.set(false);
-      }, 1000);
-    } catch (error) {
-      console.error('狀態轉換失敗:', error);
-      this.message.error('狀態轉換失敗');
-      this.isSubmittingSignal.set(false);
-    }
+      this.message.success('狀態轉換成功');
+      this.cancelTransition();
+      this.close();
+      this.isSubmitting.set(false);
+    }, 1000);
   }
 
-  /**
-   * 關閉模態框
-   */
-  onCancel(): void {
+  close(): void {
     this.visible = false;
     this.visibleChange.emit(false);
     this.cancelTransition();
   }
 
-  /**
-   * 獲取狀態圖標
-   */
-  getStateIcon(): string {
-    if (!this.workflowState) return 'question';
+  getStateName(state: PaymentWorkflowStateEnum): string {
+    return this.workflowState?.getStateDisplayName(state) || state;
+  }
 
-    const stateIcons: Record<PaymentWorkflowStateEnum, string> = {
-      [PaymentWorkflowStateEnum.Draft]: 'edit',
-      [PaymentWorkflowStateEnum.Submitted]: 'upload',
-      [PaymentWorkflowStateEnum.Reviewing]: 'eye',
-      [PaymentWorkflowStateEnum.Approved]: 'check-circle',
-      [PaymentWorkflowStateEnum.Rejected]: 'close-circle',
-      [PaymentWorkflowStateEnum.Processing]: 'loading',
-      [PaymentWorkflowStateEnum.Completed]: 'check',
-      [PaymentWorkflowStateEnum.Cancelled]: 'stop'
-    };
-
-    return stateIcons[this.workflowState?.currentState || PaymentWorkflowStateEnum.Draft] || 'question';
+  getStateColor(state: PaymentWorkflowStateEnum): string {
+    return this.workflowState?.getStateColor(state) || 'default';
   }
 }

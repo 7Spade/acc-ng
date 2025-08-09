@@ -1,3 +1,4 @@
+
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, signal, computed, inject, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -16,27 +17,6 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { WorkflowService } from '../../application/services/workflow.service';
 import { DynamicWorkflowState, DynamicStateTransition } from '../../domain/value-objects/dynamic-workflow-state.vo';
 
-export interface WorkflowState {
-  id: string;
-  name: string;
-  description: string;
-  isInitial: boolean;
-  isFinal: boolean;
-  color: string;
-}
-
-export interface StateTransition {
-  id: string;
-  from: string;
-  to: string;
-  condition: string;
-  action: string;
-}
-
-/**
- * 工作流程狀態機設計器
- * 極簡設計，使用 ng-zorro-antd 組件
- */
 @Component({
   selector: 'app-workflow-designer',
   standalone: true,
@@ -62,15 +42,15 @@ export interface StateTransition {
       </nz-card>
 
       <div class="designer-grid">
-        <!-- 左側：狀態設計 -->
+        <!-- 左側：狀態管理 -->
         <div class="left-panel">
-          <!-- 添加/編輯狀態 -->
+          <!-- 狀態表單 -->
           <nz-card [nzTitle]="editingState() ? '編輯狀態' : '新增狀態'" class="state-form-card">
             <form nz-form nzLayout="vertical">
               <nz-form-item>
                 <nz-form-label nzRequired>狀態名稱</nz-form-label>
                 <nz-form-control>
-                  <input nz-input [(ngModel)]="newStateName" name="newStateName" placeholder="例：草稿、已提交、審核中..." />
+                  <input nz-input [(ngModel)]="stateForm.name" placeholder="例：草稿、已提交、審核中..." />
                 </nz-form-control>
               </nz-form-item>
 
@@ -79,8 +59,7 @@ export interface StateTransition {
                 <nz-form-control>
                   <textarea
                     nz-input
-                    [(ngModel)]="newStateDescription"
-                    name="newStateDescription"
+                    [(ngModel)]="stateForm.description"
                     rows="2"
                     placeholder="說明此狀態的用途..."
                   ></textarea>
@@ -89,18 +68,36 @@ export interface StateTransition {
 
               <nz-form-item>
                 <nz-form-control>
-                  @if (editingState(); as state) {
-                    <button nz-button nzType="primary" (click)="updateState()" class="update-btn">
-                      <span nz-icon nzType="save"></span>
-                      更新
-                    </button>
-                    <button nz-button nzType="default" (click)="cancelEdit()" class="cancel-btn"> 取消 </button>
-                  } @else {
-                    <button nz-button nzType="primary" (click)="addState()" [disabled]="!newStateName.trim()">
+                  <button 
+                    *ngIf="editingState(); else addButton" 
+                    nz-button 
+                    nzType="primary" 
+                    (click)="updateState()"
+                  >
+                    <span nz-icon nzType="save"></span>
+                    更新
+                  </button>
+                  <ng-template #addButton>
+                    <button 
+                      nz-button 
+                      nzType="primary" 
+                      (click)="addState()" 
+                      [disabled]="!stateForm.name.trim()"
+                    >
                       <span nz-icon nzType="plus"></span>
                       新增狀態
                     </button>
-                  }
+                  </ng-template>
+                  
+                  <button 
+                    *ngIf="editingState()" 
+                    nz-button 
+                    nzType="default" 
+                    (click)="cancelEdit()" 
+                    class="ml-2"
+                  >
+                    取消
+                  </button>
                 </nz-form-control>
               </nz-form-item>
             </form>
@@ -110,7 +107,7 @@ export interface StateTransition {
           <nz-card nzTitle="狀態列表" class="state-list-card">
             <div class="state-list">
               @for (state of states(); track state.id) {
-                <div class="state-item" [class.current-state]="currentWorkflowState() === state.id" [style.background-color]="state.color">
+                <div class="state-item" [class.current-state]="currentStateId() === state.id" [style.background-color]="state.color">
                   <div class="state-content">
                     <div class="state-header">
                       <h4>{{ state.name }}</h4>
@@ -121,7 +118,7 @@ export interface StateTransition {
                         @if (state.isFinal) {
                           <nz-tag nzColor="red">結束</nz-tag>
                         }
-                        @if (currentWorkflowState() === state.id) {
+                        @if (currentStateId() === state.id) {
                           <nz-tag nzColor="blue">當前</nz-tag>
                         }
                       </div>
@@ -160,7 +157,7 @@ export interface StateTransition {
             </div>
           </nz-card>
 
-          <!-- 新增轉換 -->
+          <!-- 轉換表單 -->
           <nz-card nzTitle="新增狀態轉換" class="transition-form-card">
             <form nz-form nzLayout="vertical">
               <div nz-row [nzGutter]="16">
@@ -168,7 +165,7 @@ export interface StateTransition {
                   <nz-form-item>
                     <nz-form-label>從狀態</nz-form-label>
                     <nz-form-control>
-                      <nz-select [(ngModel)]="selectedFromState" name="selectedFromState" nzPlaceHolder="選擇狀態">
+                      <nz-select [(ngModel)]="transitionForm.from" placeholder="選擇狀態">
                         @for (state of states(); track state.id) {
                           <nz-option [nzLabel]="state.name" [nzValue]="state.id"></nz-option>
                         }
@@ -180,7 +177,7 @@ export interface StateTransition {
                   <nz-form-item>
                     <nz-form-label>到狀態</nz-form-label>
                     <nz-form-control>
-                      <nz-select [(ngModel)]="selectedToState" name="selectedToState" nzPlaceHolder="選擇狀態">
+                      <nz-select [(ngModel)]="transitionForm.to" placeholder="選擇狀態">
                         @for (state of availableToStates(); track state.id) {
                           <nz-option [nzLabel]="state.name" [nzValue]="state.id"></nz-option>
                         }
@@ -193,7 +190,7 @@ export interface StateTransition {
               <nz-form-item>
                 <nz-form-label>轉換條件 / 動作</nz-form-label>
                 <nz-form-control>
-                  <input nz-input [(ngModel)]="transitionCondition" name="transitionCondition" placeholder="例：提交、審核通過、退回..." />
+                  <input nz-input [(ngModel)]="transitionForm.condition" placeholder="例：提交、審核通過、退回..." />
                 </nz-form-control>
               </nz-form-item>
 
@@ -204,7 +201,7 @@ export interface StateTransition {
                     nzType="primary"
                     nzBlock
                     (click)="addTransition()"
-                    [disabled]="!selectedFromState || !selectedToState || !transitionCondition.trim()"
+                    [disabled]="!canAddTransition()"
                   >
                     <span nz-icon nzType="arrow-right"></span>
                     新增轉換
@@ -215,7 +212,7 @@ export interface StateTransition {
           </nz-card>
         </div>
 
-        <!-- 右側：流程預覽和執行 -->
+        <!-- 右側：預覽和執行 -->
         <div class="right-panel">
           <!-- 轉換列表 -->
           <nz-card nzTitle="狀態轉換規則" class="transition-list-card">
@@ -248,7 +245,7 @@ export interface StateTransition {
 
           <!-- 流程執行 -->
           <nz-card nzTitle="流程執行模擬" class="execution-card">
-            @if (currentWorkflowState(); as currentState) {
+            @if (currentStateId(); as currentState) {
               <div class="current-state-display">
                 <nz-tag nzColor="blue" class="current-state-tag"> 當前狀態：{{ getCurrentStateName() }} </nz-tag>
                 @if (getCurrentStateDescription()) {
@@ -276,7 +273,7 @@ export interface StateTransition {
             }
           </nz-card>
 
-          <!-- 流程圖視覺化 -->
+          <!-- 流程圖預覽 -->
           <nz-card nzTitle="流程圖預覽" class="preview-card">
             <div class="workflow-preview">
               @if (states().length > 0) {
@@ -284,7 +281,7 @@ export interface StateTransition {
                   @for (state of states(); track state.id) {
                     <div
                       class="preview-state"
-                      [class.current-preview-state]="currentWorkflowState() === state.id"
+                      [class.current-preview-state]="currentStateId() === state.id"
                       [style.background-color]="state.color"
                     >
                       <div class="preview-state-name">{{ state.name }}</div>
@@ -382,10 +379,6 @@ export interface StateTransition {
       .state-actions {
         display: flex;
         gap: 4px;
-      }
-
-      .update-btn {
-        margin-right: 8px;
       }
 
       .transition-list {
@@ -517,6 +510,10 @@ export interface StateTransition {
         border-radius: 50%;
       }
 
+      .ml-2 {
+        margin-left: 8px;
+      }
+
       @media (max-width: 1200px) {
         .designer-grid {
           grid-template-columns: 1fr;
@@ -531,65 +528,51 @@ export class WorkflowDesignerComponent implements OnInit, OnDestroy {
 
   @Input() companyId = '';
 
-  // 本地編輯狀態
-  private readonly editingStateSignal = signal<WorkflowState | null>(null);
+  // 簡化狀態管理
+  readonly editingState = signal<any | null>(null);
 
   // 表單狀態
-  newStateName = '';
-  newStateDescription = '';
-  selectedFromState = '';
-  selectedToState = '';
-  transitionCondition = '';
+  stateForm = {
+    name: '',
+    description: ''
+  };
 
-  // Computed - 從工作流程服務獲取數據
+  transitionForm = {
+    from: '',
+    to: '',
+    condition: ''
+  };
+
+  // Computed properties
   readonly states = computed(() => {
     const workflow = this.workflowService.currentWorkflow();
-    return workflow
-      ? workflow.states.map(
-          s =>
-            ({
-              id: s.id,
-              name: s.name,
-              description: s.description,
-              isInitial: s.isInitial,
-              isFinal: s.isFinal,
-              color: s.color
-            }) as WorkflowState
-        )
-      : [];
+    return workflow?.states || [];
   });
 
   readonly transitions = computed(() => {
     const workflow = this.workflowService.currentWorkflow();
-    return workflow
-      ? workflow.transitions.map(
-          t =>
-            ({
-              id: t.id,
-              from: t.from,
-              to: t.to,
-              condition: t.condition,
-              action: t.action
-            }) as StateTransition
-        )
-      : [];
+    return workflow?.transitions || [];
   });
 
-  readonly editingState = this.editingStateSignal.asReadonly();
-
-  readonly currentWorkflowState = computed(() => {
+  readonly currentStateId = computed(() => {
     const workflow = this.workflowService.currentWorkflow();
-    return workflow ? workflow.currentStateId : '';
+    return workflow?.currentStateId || '';
   });
 
   readonly loading = this.workflowService.loading;
 
   readonly availableToStates = computed(() => {
-    return this.states().filter(s => s.id !== this.selectedFromState);
+    return this.states().filter(s => s.id !== this.transitionForm.from);
   });
 
   readonly availableTransitions = computed(() => {
-    return this.transitions().filter(t => t.from === this.currentWorkflowState());
+    return this.transitions().filter(t => t.from === this.currentStateId());
+  });
+
+  readonly canAddTransition = computed(() => {
+    return this.transitionForm.from && 
+           this.transitionForm.to && 
+           this.transitionForm.condition.trim();
   });
 
   ngOnInit(): void {
@@ -602,132 +585,130 @@ export class WorkflowDesignerComponent implements OnInit, OnDestroy {
     this.workflowService.clearCurrentWorkflow();
   }
 
-  // 添加新狀態
+  // 狀態操作
   addState(): void {
-    if (this.newStateName.trim()) {
-      const newState: DynamicWorkflowState = {
-        id: Date.now().toString(),
-        name: this.newStateName.trim(),
-        description: this.newStateDescription.trim(),
-        isInitial: this.states().length === 0,
-        isFinal: false,
-        color: `hsl(${Math.random() * 360}, 70%, 85%)`
-      };
+    if (!this.stateForm.name.trim()) return;
 
-      this.workflowService.addState(newState).subscribe(() => {
-        this.newStateName = '';
-        this.newStateDescription = '';
-        this.message.success('狀態新增成功');
-      });
-    }
+    const newState: DynamicWorkflowState = {
+      id: Date.now().toString(),
+      name: this.stateForm.name.trim(),
+      description: this.stateForm.description.trim(),
+      isInitial: this.states().length === 0,
+      isFinal: false,
+      color: `hsl(${Math.random() * 360}, 70%, 85%)`
+    };
+
+    this.workflowService.addState(newState).subscribe(() => {
+      this.resetStateForm();
+      this.message.success('狀態新增成功');
+    });
   }
 
-  // 編輯狀態
-  editState(state: WorkflowState): void {
-    this.editingStateSignal.set(state);
-    this.newStateName = state.name;
-    this.newStateDescription = state.description;
+  editState(state: any): void {
+    this.editingState.set(state);
+    this.stateForm.name = state.name;
+    this.stateForm.description = state.description;
   }
 
-  // 更新狀態
   updateState(): void {
     const editingState = this.editingState();
-    if (editingState && this.newStateName.trim()) {
-      const updates = {
-        name: this.newStateName.trim(),
-        description: this.newStateDescription.trim()
-      };
+    if (!editingState || !this.stateForm.name.trim()) return;
 
-      this.workflowService.updateState(editingState.id, updates).subscribe(() => {
-        this.cancelEdit();
-        this.message.success('狀態更新成功');
-      });
-    }
+    const updates = {
+      name: this.stateForm.name.trim(),
+      description: this.stateForm.description.trim()
+    };
+
+    this.workflowService.updateState(editingState.id, updates).subscribe(() => {
+      this.cancelEdit();
+      this.message.success('狀態更新成功');
+    });
   }
 
-  // 取消編輯
   cancelEdit(): void {
-    this.editingStateSignal.set(null);
-    this.newStateName = '';
-    this.newStateDescription = '';
+    this.editingState.set(null);
+    this.resetStateForm();
   }
 
-  // 刪除狀態
   deleteState(stateId: string): void {
     this.workflowService.removeState(stateId).subscribe(() => {
       this.message.success('狀態刪除成功');
     });
   }
 
-  // 添加轉換
+  // 轉換操作
   addTransition(): void {
-    if (this.selectedFromState && this.selectedToState && this.transitionCondition.trim()) {
-      const newTransition: DynamicStateTransition = {
-        id: Date.now().toString(),
-        from: this.selectedFromState,
-        to: this.selectedToState,
-        condition: this.transitionCondition.trim(),
-        action: ''
-      };
+    if (!this.canAddTransition()) return;
 
-      this.workflowService.addTransition(newTransition).subscribe(() => {
-        this.selectedFromState = '';
-        this.selectedToState = '';
-        this.transitionCondition = '';
-        this.message.success('轉換規則新增成功');
-      });
-    }
+    const newTransition: DynamicStateTransition = {
+      id: Date.now().toString(),
+      from: this.transitionForm.from,
+      to: this.transitionForm.to,
+      condition: this.transitionForm.condition.trim(),
+      action: ''
+    };
+
+    this.workflowService.addTransition(newTransition).subscribe(() => {
+      this.resetTransitionForm();
+      this.message.success('轉換規則新增成功');
+    });
   }
 
-  // 刪除轉換
   deleteTransition(transitionId: string): void {
     this.workflowService.removeTransition(transitionId).subscribe(() => {
       this.message.success('轉換規則刪除成功');
     });
   }
 
-  // 執行狀態轉換
   executeTransition(transitionId: string): void {
     const transition = this.transitions().find(t => t.id === transitionId);
-    if (transition) {
-      this.workflowService.executeTransition(transition.to, 'System', `執行轉換: ${transition.condition}`).subscribe(() => {
-        this.message.success(`狀態已轉換至：${this.getStateName(transition.to)}`);
-      });
-    }
+    if (!transition) return;
+
+    this.workflowService.executeTransition(transition.to, 'System', `執行轉換: ${transition.condition}`).subscribe(() => {
+      this.message.success(`狀態已轉換至：${this.getStateName(transition.to)}`);
+    });
   }
 
-  // 設置為初始狀態
+  // 其他操作
   setAsInitialState(stateId: string): void {
     this.workflowService.setInitialState(stateId).subscribe(() => {
       this.message.success('初始狀態設定成功');
     });
   }
 
-  // 切換終止狀態
   toggleFinalState(stateId: string): void {
     const state = this.states().find(s => s.id === stateId);
-    if (state) {
-      this.workflowService.updateState(stateId, { isFinal: !state.isFinal }).subscribe(() => {
-        this.message.success('終止狀態設定已更新');
-      });
-    }
+    if (!state) return;
+
+    this.workflowService.updateState(stateId, { isFinal: !state.isFinal }).subscribe(() => {
+      this.message.success('終止狀態設定已更新');
+    });
   }
 
-  // 獲取狀態名稱
+  // 輔助方法
   getStateName(stateId: string): string {
     const state = this.states().find(s => s.id === stateId);
-    return state ? state.name : '未知狀態';
+    return state?.name || '未知狀態';
   }
 
-  // 獲取當前狀態名稱
   getCurrentStateName(): string {
-    const state = this.states().find(s => s.id === this.currentWorkflowState());
-    return state ? state.name : '';
+    const state = this.states().find(s => s.id === this.currentStateId());
+    return state?.name || '';
   }
 
-  // 獲取當前狀態描述
   getCurrentStateDescription(): string {
-    const state = this.states().find(s => s.id === this.currentWorkflowState());
-    return state ? state.description : '';
+    const state = this.states().find(s => s.id === this.currentStateId());
+    return state?.description || '';
+  }
+
+  private resetStateForm(): void {
+    this.stateForm.name = '';
+    this.stateForm.description = '';
+  }
+
+  private resetTransitionForm(): void {
+    this.transitionForm.from = '';
+    this.transitionForm.to = '';
+    this.transitionForm.condition = '';
   }
 }
