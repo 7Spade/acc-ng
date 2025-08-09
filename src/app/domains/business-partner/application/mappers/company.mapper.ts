@@ -94,7 +94,7 @@ export class CompanyMapper {
    */
   private validateFormValue(formValue: Record<string, unknown>): CompanyFormValue {
     const requiredFields = ['companyName', 'businessRegistrationNumber', 'address', 'businessPhone'];
-    
+
     for (const field of requiredFields) {
       if (!formValue[field] || typeof formValue[field] !== 'string') {
         throw new Error(`Invalid or missing required field: ${field}`);

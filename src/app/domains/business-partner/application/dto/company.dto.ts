@@ -25,6 +25,7 @@ export interface DynamicWorkflowData {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  [key: string]: unknown; // 添加索引簽名以兼容 Record<string, unknown>
 }
 
 /**
