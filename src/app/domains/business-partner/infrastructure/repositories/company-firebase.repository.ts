@@ -1,228 +1,84 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, docData } from '@angular/fire/firestore';
-import { Observable, from, map, catchError, of } from 'rxjs';
-
+import { Observable, from, map } from 'rxjs';
+import { Firestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where } from '@angular/fire/firestore';
 import { Company } from '../../domain/entities/company.entity';
-import { Contact } from '../../domain/entities/contact.entity';
 import { CompanyRepository } from '../../domain/repositories/company.repository';
-import { CompanyId } from '../../domain/value-objects/company-id.vo';
-import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
-import { DynamicWorkflowStateVO } from '../../domain/value-objects/dynamic-workflow-state.vo';
-import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
 
-/**
- * Firebase 公司儲存庫實現
- * 極簡設計，專注數據持久化
- */
 @Injectable({
   providedIn: 'root'
 })
-export class CompanyFirebaseRepository extends CompanyRepository {
+export class CompanyFirebaseRepository implements CompanyRepository {
   private readonly firestore = inject(Firestore);
   private readonly collectionName = 'companies';
 
   getAll(): Observable<Company[]> {
     const companiesRef = collection(this.firestore, this.collectionName);
-
     return from(getDocs(companiesRef)).pipe(
-      map(querySnapshot => {
-        if (querySnapshot.empty) {
-          return [];
-        }
-        
-        return querySnapshot.docs
-          .map(doc => {
-            const data = doc.data();
-            if (!data || !this.isValidCompanyData(data)) {
-              console.warn(`跳過無效的公司數據: ${doc.id}`);
-              return null;
-            }
-            return this.fromFirestore({ ...data, id: doc.id });
-          })
-          .filter(company => company !== null) as Company[];
-      }),
-      catchError(error => {
-        console.error('獲取公司列表失敗:', error);
-        return of([]);
-      })
+      map(snapshot => snapshot.docs.map(doc => this.mapDocToCompany(doc)))
     );
   }
 
-  getById(id: string): Observable<Company | null> {
-    const companyRef = doc(this.firestore, this.collectionName, id);
-
-    return docData(companyRef, { idField: 'id' }).pipe(
-      map(data => (data ? this.fromFirestore(data) : null)),
-      catchError(error => {
-        console.error('獲取公司詳情失敗:', error);
-        return of(null);
+  getById(id: string): Observable<Company> {
+    const docRef = doc(this.firestore, this.collectionName, id);
+    return from(getDoc(docRef)).pipe(
+      map(docSnap => {
+        if (!docSnap.exists()) throw new Error(`Company with id ${id} not found`);
+        return this.mapDocToCompany(docSnap);
       })
     );
   }
 
   create(company: Company): Observable<Company> {
     const companiesRef = collection(this.firestore, this.collectionName);
-    const firestoreData = this.toFirestore(company);
+    const data = company.toPlainObject();
+    delete data.id; // Let Firestore generate the ID
 
-    return from(addDoc(companiesRef, firestoreData)).pipe(
-      map(docRef => {
-        // 創建新的公司實例，使用 Firestore 生成的 ID
-        const newCompany = Company.create({
-          companyName: company.companyName,
-          businessRegistrationNumber: company.businessRegistrationNumber,
-          address: company.address,
-          businessPhone: company.businessPhone,
-          status: company.status.value,
-          riskLevel: company.riskLevel.value,
-          fax: company.fax,
-          website: company.website,
-          contacts: company.contacts.map(c =>
-            Contact.create({
-              name: c.name,
-              title: c.title,
-              email: c.email,
-              phone: c.phone,
-              isPrimary: c.isPrimary
-            })
-          )
-        });
-
-        // 設置正確的 ID
-        (newCompany as any).id = CompanyId.create(docRef.id);
-        return newCompany;
-      }),
-      catchError(error => {
-        console.error('創建公司失敗:', error);
-        throw error;
-      })
+    return from(addDoc(companiesRef, data)).pipe(
+      map(docRef => new Company(docRef.id, ...Object.values(data)))
     );
   }
 
-  update(id: string, company: Company): Observable<Company> {
-    const companyRef = doc(this.firestore, this.collectionName, id);
-    const firestoreData = this.toFirestore(company);
+  update(company: Company): Observable<Company> {
+    const docRef = doc(this.firestore, this.collectionName, company.id);
+    const data = company.toPlainObject();
+    delete data.id;
 
-    return from(updateDoc(companyRef, firestoreData)).pipe(
-      map(() => company),
-      catchError(error => {
-        console.error('更新公司失敗:', error);
-        throw error;
-      })
+    return from(updateDoc(docRef, data)).pipe(
+      map(() => company)
     );
   }
 
   delete(id: string): Observable<void> {
-    const companyRef = doc(this.firestore, this.collectionName, id);
-
-    return from(deleteDoc(companyRef)).pipe(
-      catchError(error => {
-        console.error('刪除公司失敗:', error);
-        throw error;
-      })
-    );
+    const docRef = doc(this.firestore, this.collectionName, id);
+    return from(deleteDoc(docRef));
   }
 
   search(query: string): Observable<Company[]> {
-    // 簡單的客戶端搜尋實現
+    // For simplicity, get all and filter client-side
+    // In production, consider Firestore text search or Algolia
     return this.getAll().pipe(
-      map(companies =>
-        companies.filter(
-          company => company.companyName.toLowerCase().includes(query.toLowerCase()) || company.businessRegistrationNumber.includes(query)
-        )
-      )
+      map(companies => companies.filter(company =>
+        company.companyName.toLowerCase().includes(query.toLowerCase()) ||
+        company.businessRegistrationNumber.includes(query)
+      ))
     );
   }
 
-  /**
-   * 轉換為 Firestore 格式
-   */
-  private toFirestore(company: Company): any {
-    const firestoreData = {
-      companyName: company.companyName,
-      businessRegistrationNumber: company.businessRegistrationNumber,
-      address: company.address,
-      businessPhone: company.businessPhone,
-      status: company.status.value,
-      riskLevel: company.riskLevel.value,
-      fax: company.fax,
-      website: company.website,
-      contacts: company.contacts.map(c => ({
-        name: c.name,
-        title: c.title,
-        email: c.email,
-        phone: c.phone,
-        isPrimary: c.isPrimary
-      })),
-      dynamicWorkflow: company.dynamicWorkflow ? company.dynamicWorkflow.toPlainObject() : null,
-      createdAt: company.createdAt,
-      updatedAt: company.updatedAt
-    };
-
-    console.log('準備保存到 Firestore 的數據:', {
-      companyId: company.companyId.value,
-      dynamicWorkflow: firestoreData.dynamicWorkflow
-    });
-
-    return firestoreData;
-  }
-
-  /**
-   * 驗證公司數據是否有效
-   */
-  private isValidCompanyData(data: any): boolean {
-    return data && 
-           typeof data.companyName === 'string' && 
-           data.companyName.trim() !== '' &&
-           typeof data.businessRegistrationNumber === 'string' && 
-           data.businessRegistrationNumber.trim() !== '';
-  }
-
-  /**
-   * 從 Firestore 格式轉換
-   */
-  private fromFirestore(data: any): Company {
-    // 安全處理聯絡人數據
-    const contacts = Array.isArray(data.contacts) 
-      ? data.contacts
-          .filter((c: any) => c && typeof c === 'object')
-          .map((c: any) => Contact.create({
-            name: (c.name || '').toString().trim(),
-            title: (c.title || '').toString().trim(),
-            email: (c.email || '').toString().trim(),
-            phone: (c.phone || '').toString().trim(),
-            isPrimary: Boolean(c.isPrimary)
-          }))
-      : [];
-
-    // 安全處理動態工作流程數據
-    let dynamicWorkflow: DynamicWorkflowStateVO | null = null;
-    if (data.dynamicWorkflow && typeof data.dynamicWorkflow === 'object') {
-      try {
-        dynamicWorkflow = DynamicWorkflowStateVO.fromPlainObject(data.dynamicWorkflow);
-      } catch (error) {
-        console.warn(`工作流程數據解析失敗 (${data.id}):`, error);
-        dynamicWorkflow = null;
-      }
-    }
-
-    const company = Company.create({
-      companyName: data.companyName || '',
-      businessRegistrationNumber: data.businessRegistrationNumber || '',
-      address: data.address || '',
-      businessPhone: data.businessPhone || '',
-      status: data.status || CompanyStatusEnum.Active,
-      riskLevel: data.riskLevel || RiskLevelEnum.Low,
-      fax: data.fax || '',
-      website: data.website || '',
-      contacts,
-      dynamicWorkflow: dynamicWorkflow || undefined
-    });
-
-    // 設置正確的 ID 和時間戳
-    (company as any).id = CompanyId.create(data.id);
-    (company as any).createdAt = data.createdAt?.toDate?.() || new Date();
-    (company as any).updatedAt = data.updatedAt?.toDate?.() || new Date();
-
-    return company;
+  private mapDocToCompany(doc: any): Company {
+    const data = doc.data();
+    return new Company(
+      doc.id,
+      data.companyName,
+      data.businessRegistrationNumber,
+      data.address,
+      data.businessPhone,
+      data.status,
+      data.riskLevel,
+      data.fax || '',
+      data.website || '',
+      data.contacts || [],
+      new Date(data.createdAt),
+      new Date(data.updatedAt)
+    );
   }
 }

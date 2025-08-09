@@ -1,33 +1,23 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, map, catchError, finalize, of } from 'rxjs';
-
-import { CreateCompanyDto, UpdateCompanyDto, CompanyResponseDto, ContactDto } from '../dto/company.dto';
-import { CreateCompanyUseCase } from '../use-cases/create-company.use-case';
-import { DeleteCompanyUseCase } from '../use-cases/delete-company.use-case';
-import { GetCompaniesUseCase } from '../use-cases/get-companies.use-case';
-import { UpdateCompanyContactUseCase } from '../use-cases/update-company-contact.use-case';
-import { UpdateCompanyUseCase } from '../use-cases/update-company.use-case';
+import { Company, CreateCompanyProps, Contact } from '../../domain/entities/company.entity';
+import { COMPANY_REPOSITORY } from '../../domain/repositories/company.repository';
 
 /**
  * 公司應用服務
  * 極簡設計，使用 Angular Signals 進行狀態管理
- * 作為用例的 Facade，提供統一的 API
+ * 直接與 Repository 互動，移除不必要的 UseCase 層
  */
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyService {
-  private readonly createCompanyUseCase = inject(CreateCompanyUseCase);
-  private readonly updateCompanyUseCase = inject(UpdateCompanyUseCase);
-  private readonly deleteCompanyUseCase = inject(DeleteCompanyUseCase);
-  private readonly getCompaniesUseCase = inject(GetCompaniesUseCase);
-  private readonly updateCompanyContactUseCase = inject(UpdateCompanyContactUseCase);
+  private readonly repository = inject(COMPANY_REPOSITORY);
 
-  // Signals 狀態管理
-  private readonly companiesSignal = signal<CompanyResponseDto[]>([]);
+  // Simple state management
+  private readonly companiesSignal = signal<Company[]>([]);
   private readonly loadingSignal = signal(false);
   private readonly errorSignal = signal<string | null>(null);
-  private readonly isLoadedSignal = signal(false);
 
   // Computed 派生狀態
   readonly companies = computed(() => this.companiesSignal());
@@ -40,46 +30,43 @@ export class CompanyService {
   }
 
   /**
-   * 載入公司列表（帶緩存檢查）
+   * 載入公司列表
    */
   loadCompanies(): void {
     // 如果已經載入過且沒有錯誤，直接返回
-    if (this.isLoadedSignal() && !this.errorSignal()) {
+    if (this.companies().length > 0 && !this.errorSignal()) {
       return;
     }
 
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    this.getCompaniesUseCase
-      .execute()
-      .pipe(
-        finalize(() => this.loadingSignal.set(false)),
-        catchError(error => {
-          console.error('載入公司列表失敗:', error);
-          this.errorSignal.set('載入公司列表失敗');
-          return of([]);
-        })
-      )
-      .subscribe(companies => {
-        this.companiesSignal.set(companies);
-        this.isLoadedSignal.set(true);
-      });
+    this.repository.getAll().pipe(
+      finalize(() => this.loadingSignal.set(false)),
+      catchError(error => {
+        console.error('載入公司列表失敗:', error);
+        this.errorSignal.set('載入公司列表失敗');
+        return of([]);
+      })
+    ).subscribe(companies => {
+      this.companiesSignal.set(companies);
+    });
   }
 
   /**
    * 創建公司
    */
-  createCompany(dto: CreateCompanyDto): Observable<CompanyResponseDto> {
+  createCompany(props: CreateCompanyProps): Observable<Company> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    return this.createCompanyUseCase.execute(dto).pipe(
-      map(company => {
+    const company = Company.create(props);
+
+    return this.repository.create(company).pipe(
+      map(savedCompany => {
         // 更新本地狀態
-        const currentCompanies = this.companiesSignal();
-        this.companiesSignal.set([...currentCompanies, company]);
-        return company;
+        this.companiesSignal.update(companies => [...companies, savedCompany]);
+        return savedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),
       catchError(error => {
@@ -93,7 +80,7 @@ export class CompanyService {
   /**
    * 搜尋公司
    */
-  searchCompanies(query: string): Observable<CompanyResponseDto[]> {
+  searchCompanies(query: string): Observable<Company[]> {
     if (!query.trim()) {
       return of(this.companies());
     }
@@ -122,16 +109,19 @@ export class CompanyService {
   /**
    * 更新公司
    */
-  updateCompany(id: string, dto: UpdateCompanyDto): Observable<CompanyResponseDto> {
+  updateCompany(id: string, props: Partial<CreateCompanyProps>): Observable<Company> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    return this.updateCompanyUseCase.execute(id, dto).pipe(
+    // Fetch the existing company to apply updates
+    return this.repository.getById(id).pipe(
+      map(company => company.update(props)), // Apply updates using the entity's method
+      map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
       map(updatedCompany => {
-        // 更新本地狀態
-        const currentCompanies = this.companiesSignal();
-        const updatedCompanies = currentCompanies.map(company => (company.id === id ? updatedCompany : company));
-        this.companiesSignal.set(updatedCompanies);
+        // Update local state
+        this.companiesSignal.update(companies =>
+          companies.map(c => c.id === id ? updatedCompany : c)
+        );
         return updatedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),
@@ -150,12 +140,12 @@ export class CompanyService {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    return this.deleteCompanyUseCase.execute(id).pipe(
+    return this.repository.delete(id).pipe(
       map(() => {
-        // 更新本地狀態
-        const currentCompanies = this.companiesSignal();
-        const filteredCompanies = currentCompanies.filter(company => company.id !== id);
-        this.companiesSignal.set(filteredCompanies);
+        // Update local state
+        this.companiesSignal.update(companies =>
+          companies.filter(c => c.id !== id)
+        );
       }),
       finalize(() => this.loadingSignal.set(false)),
       catchError(error => {
@@ -167,25 +157,21 @@ export class CompanyService {
   }
 
   /**
-   * 更新公司列表（用於本地狀態更新）
-   */
-  updateCompanies(companies: CompanyResponseDto[]): void {
-    this.companiesSignal.set(companies);
-  }
-
-  /**
    * 新增聯絡人
    */
-  addContact(companyId: string, contact: ContactDto): Observable<CompanyResponseDto> {
+  addContact(companyId: string, contact: Contact): Observable<Company> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    return this.updateCompanyContactUseCase.addContact(companyId, contact).pipe(
+    // Fetch the company, add contact, and update
+    return this.repository.getById(companyId).pipe(
+      map(company => company.addContact(contact)), // Add contact using entity method
+      map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
       map(updatedCompany => {
-        // 更新本地狀態
-        const currentCompanies = this.companiesSignal();
-        const updatedCompanies = currentCompanies.map(company => (company.id === companyId ? updatedCompany : company));
-        this.companiesSignal.set(updatedCompanies);
+        // Update local state
+        this.companiesSignal.update(companies =>
+          companies.map(c => c.id === companyId ? updatedCompany : c)
+        );
         return updatedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),
@@ -200,16 +186,19 @@ export class CompanyService {
   /**
    * 更新聯絡人
    */
-  updateContact(companyId: string, contactIndex: number, contact: ContactDto): Observable<CompanyResponseDto> {
+  updateContact(companyId: string, contactIndex: number, contact: Contact): Observable<Company> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    return this.updateCompanyContactUseCase.updateContact(companyId, contactIndex, contact).pipe(
+    // Fetch the company, update contact, and save
+    return this.repository.getById(companyId).pipe(
+      map(company => company.updateContact(contactIndex, contact)), // Update contact using entity method
+      map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
       map(updatedCompany => {
-        // 更新本地狀態
-        const currentCompanies = this.companiesSignal();
-        const updatedCompanies = currentCompanies.map(company => (company.id === companyId ? updatedCompany : company));
-        this.companiesSignal.set(updatedCompanies);
+        // Update local state
+        this.companiesSignal.update(companies =>
+          companies.map(c => c.id === companyId ? updatedCompany : c)
+        );
         return updatedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),
@@ -224,16 +213,19 @@ export class CompanyService {
   /**
    * 刪除聯絡人
    */
-  removeContact(companyId: string, contactIndex: number): Observable<CompanyResponseDto> {
+  removeContact(companyId: string, contactIndex: number): Observable<Company> {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    return this.updateCompanyContactUseCase.removeContact(companyId, contactIndex).pipe(
+    // Fetch the company, remove contact, and save
+    return this.repository.getById(companyId).pipe(
+      map(company => company.removeContact(contactIndex)), // Remove contact using entity method
+      map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
       map(updatedCompany => {
-        // 更新本地狀態
-        const currentCompanies = this.companiesSignal();
-        const updatedCompanies = currentCompanies.map(company => (company.id === companyId ? updatedCompany : company));
-        this.companiesSignal.set(updatedCompanies);
+        // Update local state
+        this.companiesSignal.update(companies =>
+          companies.map(c => c.id === companyId ? updatedCompany : c)
+        );
         return updatedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),
