@@ -1,4 +1,3 @@
-
 // Entities
 export * from './entities/company.entity';
 export { Contact } from './entities/contact.entity';

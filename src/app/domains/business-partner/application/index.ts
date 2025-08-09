@@ -1,4 +1,3 @@
-
 // Use Cases
 export * from './use-cases/company.use-case';
 export * from './use-cases/create-company.use-case';

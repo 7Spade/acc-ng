@@ -49,8 +49,9 @@ export class WorkflowService {
       const company = companies.find(c => c.id === companyId);
 
       const workflowData = company && (company as { dynamicWorkflow?: unknown }).dynamicWorkflow;
-      const workflow = workflowData ? DynamicWorkflowStateVO.fromPlainObject(workflowData as Record<string, unknown>)
-      : DynamicWorkflowStateVO.create([], []);
+      const workflow = workflowData
+        ? DynamicWorkflowStateVO.fromPlainObject(workflowData as Record<string, unknown>)
+        : DynamicWorkflowStateVO.create([], []);
 
       this.currentWorkflowSignal.set(workflow);
     } catch (error) {
