@@ -173,9 +173,20 @@ export class AuthBridgeService {
 
     this.delonTokenService.set(tokenModel);
 
+    // 返回符合 LoginResponse 接口的對象
     return {
       msg: 'ok',
-      user: tokenModel
+      user: {
+        id: tokenModel.id,
+        email: tokenModel.email,
+        name: tokenModel.name,
+        token: tokenModel.token,
+        uid: tokenModel.uid,
+        isAdmin: tokenModel.isAdmin,
+        isAnonymous: tokenModel.isAnonymous,
+        time: tokenModel.time,
+        expired: tokenModel.expired
+      }
     };
   }
 }

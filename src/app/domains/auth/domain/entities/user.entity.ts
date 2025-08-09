@@ -52,7 +52,7 @@ export class User extends BaseAggregateRoot<UserId> {
     const email = Email.create(firebaseUser.email || '');
     const profile = UserProfile.create(firebaseUser.displayName || 'Unknown', firebaseUser.displayName || 'Unknown');
 
-    return User.create(UserId.create(firebaseUser.uid), email, profile);
+    return User.create(email, profile, firebaseUser.uid);
   }
 
   /**
@@ -121,10 +121,11 @@ export class User extends BaseAggregateRoot<UserId> {
     return {
       token: this.generateToken(),
       name: this._profile.displayName,
-      email: this._email.value,
+      email: this._email ? this._email.value : null,
       id: this.id.value,
       uid: this._firebaseUid,
       isAdmin: this._isAdmin,
+      isAnonymous: !this._email,
       time: +new Date(),
       expired: +new Date() + 1000 * 60 * 60 * 24 // 24小時過期
     };

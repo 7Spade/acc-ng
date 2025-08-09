@@ -220,7 +220,18 @@ export class UserLoginComponent implements OnDestroy {
 
           // 確保 res.user 存在才設置
           if (res.user) {
-            this.tokenService.set(res.user);
+            // 創建符合 @delon/auth 要求的用戶對象
+            const delonUser = {
+              token: res.user.token,
+              name: res.user.name,
+              email: res.user.email || '',
+              id: res.user.id,
+              uid: res.user.uid,
+              isAdmin: res.user.isAdmin || false,
+              time: res.user.time || +new Date(),
+              expired: res.user.expired || +new Date() + 1000 * 60 * 60 * 24
+            };
+            this.tokenService.set(delonUser);
           }
 
           // 重新獲取 StartupService 內容
