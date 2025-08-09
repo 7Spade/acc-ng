@@ -23,10 +23,9 @@ export class CompanyUseCase {
   updateCompany(id: string, dto: UpdateCompanyDto): Observable<CompanyResponseDto> {
     return this.getCompanyById(id).pipe(
       map(existingCompany => {
-        let dynamicWorkflow: DynamicWorkflowStateVO | undefined = undefined;
         if (dto.dynamicWorkflow) {
           try {
-            dynamicWorkflow = DynamicWorkflowStateVO.fromPlainObject(dto.dynamicWorkflow);
+            DynamicWorkflowStateVO.fromPlainObject(dto.dynamicWorkflow);
           } catch (error) {
             console.warn('Failed to parse dynamic workflow data:', error);
           }
@@ -100,7 +99,7 @@ export class CompanyUseCase {
   }
 
   private handleError(id: string) {
-    return (error: any) => {
+    return (error: Error) => {
       if (error instanceof CompanyNotFoundException) {
         return throwError(() => error);
       }
