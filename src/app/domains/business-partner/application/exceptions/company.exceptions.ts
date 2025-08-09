@@ -40,6 +40,7 @@ export class CompanyValidationHelper {
 
   /**
    * 檢查公司是否存在
+   *
    * @param company - 要檢查的公司對象
    * @returns 如果公司存在則返回 true，否則返回 false
    */

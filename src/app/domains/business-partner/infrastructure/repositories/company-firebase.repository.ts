@@ -33,20 +33,23 @@ export class CompanyFirebaseRepository implements CompanyRepository {
     delete data['id']; // Let Firestore generate the ID
 
     return from(addDoc(companiesRef, data as Record<string, unknown>)).pipe(
-      map(docRef => new Company(
-        docRef.id,
-        data['companyName'] as string,
-        data['businessRegistrationNumber'] as string,
-        data['address'] as string,
-        data['businessPhone'] as string,
-        data['status'] as string,
-        data['riskLevel'] as string,
-        (data['fax'] as string) || '',
-        (data['website'] as string) || '',
-        (data['contacts'] as Contact[]) || [],
-        new Date(data['createdAt'] as string),
-        new Date(data['updatedAt'] as string)
-      ))
+      map(
+        docRef =>
+          new Company(
+            docRef.id,
+            data['companyName'] as string,
+            data['businessRegistrationNumber'] as string,
+            data['address'] as string,
+            data['businessPhone'] as string,
+            data['status'] as string,
+            data['riskLevel'] as string,
+            (data['fax'] as string) || '',
+            (data['website'] as string) || '',
+            (data['contacts'] as Contact[]) || [],
+            new Date(data['createdAt'] as string),
+            new Date(data['updatedAt'] as string)
+          )
+      )
     );
   }
 
