@@ -32,14 +32,14 @@ export interface DynamicWorkflowData {
  * 表單值接口
  */
 export interface CompanyFormValue {
-  companyName: string;
-  businessRegistrationNumber: string;
-  address: string;
-  businessPhone: string;
-  status: CompanyStatusEnum;
-  riskLevel: RiskLevelEnum;
-  fax?: string;
-  website?: string;
+  companyName: string | null;
+  businessRegistrationNumber: string | null;
+  address: string | null;
+  businessPhone: string | null;
+  status: CompanyStatusEnum | null;
+  riskLevel: RiskLevelEnum | null;
+  fax?: string | null;
+  website?: string | null;
 }
 
 /**

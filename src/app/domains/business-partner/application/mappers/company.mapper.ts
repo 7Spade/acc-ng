@@ -63,12 +63,12 @@ export class CompanyMapper {
   toCreateCompanyDto(formValue: Partial<CompanyFormValue>): CreateCompanyDto {
     const validated = this.validateFormValue(formValue);
     return {
-      companyName: validated.companyName,
-      businessRegistrationNumber: validated.businessRegistrationNumber,
-      address: validated.address,
-      businessPhone: validated.businessPhone,
-      status: validated.status,
-      riskLevel: validated.riskLevel,
+      companyName: validated.companyName!,
+      businessRegistrationNumber: validated.businessRegistrationNumber!,
+      address: validated.address!,
+      businessPhone: validated.businessPhone!,
+      status: validated.status || CompanyStatusEnum.Active,
+      riskLevel: validated.riskLevel || RiskLevelEnum.Low,
       fax: validated.fax || '',
       website: validated.website || ''
     };
@@ -80,12 +80,12 @@ export class CompanyMapper {
   toUpdateCompanyDto(formValue: Partial<CompanyFormValue>): UpdateCompanyDto {
     const validated = this.validateFormValue(formValue);
     return {
-      companyName: validated.companyName,
-      businessRegistrationNumber: validated.businessRegistrationNumber,
-      address: validated.address,
-      businessPhone: validated.businessPhone,
-      status: validated.status,
-      riskLevel: validated.riskLevel,
+      companyName: validated.companyName!,
+      businessRegistrationNumber: validated.businessRegistrationNumber!,
+      address: validated.address!,
+      businessPhone: validated.businessPhone!,
+      status: validated.status || CompanyStatusEnum.Active,
+      riskLevel: validated.riskLevel || RiskLevelEnum.Low,
       fax: validated.fax || '',
       website: validated.website || ''
     };
@@ -98,7 +98,8 @@ export class CompanyMapper {
     const requiredFields: (keyof CompanyFormValue)[] = ['companyName', 'businessRegistrationNumber', 'address', 'businessPhone'];
 
     for (const field of requiredFields) {
-      if (!formValue[field] || typeof formValue[field] !== 'string') {
+      const value = formValue[field];
+      if (!value || value === null || typeof value !== 'string') {
         throw new Error(`Invalid or missing required field: ${field}`);
       }
     }
@@ -110,8 +111,8 @@ export class CompanyMapper {
       businessPhone: formValue.businessPhone!,
       status: formValue.status || CompanyStatusEnum.Active,
       riskLevel: formValue.riskLevel || RiskLevelEnum.Low,
-      fax: formValue.fax || '',
-      website: formValue.website || ''
+      fax: formValue.fax || null,
+      website: formValue.website || null
     };
   }
 
