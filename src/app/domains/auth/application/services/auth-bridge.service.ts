@@ -1,5 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, user, signInAnonymously } from '@angular/fire/auth';
+import {
+  Auth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  user,
+  signInAnonymously
+} from '@angular/fire/auth';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { _HttpClient } from '@delon/theme';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
@@ -9,7 +17,6 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { User } from '../../domain/entities/user.entity';
 import { Email } from '../../domain/value-objects/email.vo';
 import { UserProfile } from '../../domain/value-objects/user-profile.vo';
-
 import { LoginResponse, ApiErrorResponse, FirebaseUser } from '../dto/responses/login-response.dto';
 
 /**

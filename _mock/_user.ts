@@ -113,7 +113,6 @@ export const USERS = {
     const data = req.body;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (!(data.userName === 'admin' || data.userName === 'user') || data.password !== '123456') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return { msg: `Invalid username or password（admin/123456）` };
     }
     return {
@@ -124,7 +123,7 @@ export const USERS = {
         name: data.userName,
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         email: `${data.userName}@qq.com`,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         id: 10000,
         time: +new Date()
       }

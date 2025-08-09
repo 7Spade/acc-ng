@@ -33,7 +33,7 @@ function getRule(params: any): any[] {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const s = (sorter || '').split('_');
   if (s.length !== 2) return ret;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
   const [sortField, sortDir] = s;
   ret = ret.sort((prev: any, next: any) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-member-access
