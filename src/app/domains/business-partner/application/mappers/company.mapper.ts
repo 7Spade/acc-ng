@@ -60,40 +60,42 @@ export class CompanyMapper {
   /**
    * 將表單資料轉換為 CreateCompanyDto
    */
-  toCreateCompanyDto(formValue: CompanyFormValue): CreateCompanyDto {
+  toCreateCompanyDto(formValue: Partial<CompanyFormValue>): CreateCompanyDto {
+    const validated = this.validateFormValue(formValue);
     return {
-      companyName: formValue.companyName,
-      businessRegistrationNumber: formValue.businessRegistrationNumber,
-      address: formValue.address,
-      businessPhone: formValue.businessPhone,
-      status: formValue.status,
-      riskLevel: formValue.riskLevel,
-      fax: formValue.fax || '',
-      website: formValue.website || ''
+      companyName: validated.companyName,
+      businessRegistrationNumber: validated.businessRegistrationNumber,
+      address: validated.address,
+      businessPhone: validated.businessPhone,
+      status: validated.status,
+      riskLevel: validated.riskLevel,
+      fax: validated.fax || '',
+      website: validated.website || ''
     };
   }
 
   /**
    * 將表單值轉換為 UpdateCompanyDto
    */
-  toUpdateCompanyDto(formValue: CompanyFormValue): UpdateCompanyDto {
+  toUpdateCompanyDto(formValue: Partial<CompanyFormValue>): UpdateCompanyDto {
+    const validated = this.validateFormValue(formValue);
     return {
-      companyName: formValue.companyName,
-      businessRegistrationNumber: formValue.businessRegistrationNumber,
-      address: formValue.address,
-      businessPhone: formValue.businessPhone,
-      status: formValue.status,
-      riskLevel: formValue.riskLevel,
-      fax: formValue.fax || '',
-      website: formValue.website || ''
+      companyName: validated.companyName,
+      businessRegistrationNumber: validated.businessRegistrationNumber,
+      address: validated.address,
+      businessPhone: validated.businessPhone,
+      status: validated.status,
+      riskLevel: validated.riskLevel,
+      fax: validated.fax || '',
+      website: validated.website || ''
     };
   }
 
   /**
    * 驗證表單值的型別安全方法
    */
-  private validateFormValue(formValue: Record<string, unknown>): CompanyFormValue {
-    const requiredFields = ['companyName', 'businessRegistrationNumber', 'address', 'businessPhone'];
+  private validateFormValue(formValue: Partial<CompanyFormValue>): CompanyFormValue {
+    const requiredFields: (keyof CompanyFormValue)[] = ['companyName', 'businessRegistrationNumber', 'address', 'businessPhone'];
 
     for (const field of requiredFields) {
       if (!formValue[field] || typeof formValue[field] !== 'string') {
@@ -102,14 +104,14 @@ export class CompanyMapper {
     }
 
     return {
-      companyName: formValue['companyName'] as string,
-      businessRegistrationNumber: formValue['businessRegistrationNumber'] as string,
-      address: formValue['address'] as string,
-      businessPhone: formValue['businessPhone'] as string,
-      status: (formValue['status'] as CompanyStatusEnum) || 'active',
-      riskLevel: (formValue['riskLevel'] as RiskLevelEnum) || 'low',
-      fax: (formValue['fax'] as string) || '',
-      website: (formValue['website'] as string) || ''
+      companyName: formValue.companyName!,
+      businessRegistrationNumber: formValue.businessRegistrationNumber!,
+      address: formValue.address!,
+      businessPhone: formValue.businessPhone!,
+      status: formValue.status || CompanyStatusEnum.Active,
+      riskLevel: formValue.riskLevel || RiskLevelEnum.Low,
+      fax: formValue.fax || '',
+      website: formValue.website || ''
     };
   }
 
