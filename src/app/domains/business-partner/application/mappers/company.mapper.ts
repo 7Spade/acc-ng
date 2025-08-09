@@ -3,12 +3,7 @@ import { Injectable } from '@angular/core';
 import { Company } from '../../domain/entities/company.entity';
 import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
 import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
-import { 
-  CompanyResponseDto, 
-  CreateCompanyDto, 
-  UpdateCompanyDto, 
-  CompanyFormValue 
-} from '../dto/company.dto';
+import { CompanyResponseDto, CreateCompanyDto, UpdateCompanyDto, CompanyFormValue } from '../dto/company.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -95,7 +90,7 @@ export class CompanyMapper {
    * 驗證表單值的型別安全方法
    */
   private validateFormValue(formValue: Partial<CompanyFormValue>): CompanyFormValue {
-    const requiredFields: (keyof CompanyFormValue)[] = ['companyName', 'businessRegistrationNumber', 'address', 'businessPhone'];
+    const requiredFields: Array<keyof CompanyFormValue> = ['companyName', 'businessRegistrationNumber', 'address', 'businessPhone'];
 
     for (const field of requiredFields) {
       const value = formValue[field];
