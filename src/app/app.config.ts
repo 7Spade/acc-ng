@@ -110,7 +110,7 @@ export const appConfig: ApplicationConfig = {
     UserTrackingService,
     provideAppCheck(() => {
       // TODO get a reCAPTCHA Enterprise here https://console.cloud.google.com/security/recaptcha?project=_
-      const provider = new ReCaptchaEnterpriseProvider('6Lfet5crAAAAAFDXayzMocp-GhB88FewdQ8Z9E69');
+      const provider = new ReCaptchaEnterpriseProvider('6LcHy58rAAAAAPe_YYY3st4NwUlTJ1xcj4SWDrH5');
       return initializeAppCheck(undefined, { provider, isTokenAutoRefreshEnabled: true });
     }),
     provideFirestore(() => getFirestore()),
