@@ -1,0 +1,28 @@
+Application bundle generation failed. [10.227 seconds]
+
+✘ [ERROR] TS2345: Argument of type 'DynamicWorkflowData' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type 'DynamicWorkflowData'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/use-cases/company.use-case.ts:28:51:
+      28 │ ...      DynamicWorkflowStateVO.fromPlainObject(dto.dynamicWorkflow);
+         ╵                                                 ~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2345: Argument of type 'Partial<{ companyName: string | null; businessRegistrationNumber: string | null; address: string | null; businessPhone: string | null; status: CompanyStatusEnum | null; riskLevel: RiskLevelEnum | null; fax: string | null; website: string | null; }>' is not assignable to parameter of type 'CompanyFormValue'.
+  Types of property 'companyName' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/presentation/components/company-list.component.ts:501:82:
+      501 │ ...e.createCompany(this.companyMapper.toCreateCompanyDto(formValue))
+          ╵                                                          ~~~~~~~~~
+
+
+✘ [ERROR] TS2345: Argument of type 'Partial<{ companyName: string | null; businessRegistrationNumber: string | null; address: string | null; businessPhone: string | null; status: CompanyStatusEnum | null; riskLevel: RiskLevelEnum | null; fax: string | null; website: string | null; }>' is not assignable to parameter of type 'CompanyFormValue'.
+  Types of property 'companyName' are incompatible.
+    Type 'string | null | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/presentation/components/company-list.component.ts:502:106:
+      502 │ ...ingCompanyId!, this.companyMapper.toUpdateCompanyDto(formValue));
+          ╵                                                         ~~~~~~~~~
