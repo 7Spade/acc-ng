@@ -2,6 +2,46 @@ import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo'
 import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
 
 /**
+ * 動態工作流程步驟
+ */
+export interface WorkflowStep {
+  id: string;
+  name: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'failed';
+  assignee?: string;
+  dueDate?: string;
+  notes?: string;
+}
+
+/**
+ * 動態工作流程數據
+ */
+export interface DynamicWorkflowData {
+  workflowId: string;
+  workflowName: string;
+  currentStep: number;
+  totalSteps: number;
+  steps: WorkflowStep[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * 表單值接口
+ */
+export interface CompanyFormValue {
+  companyName: string;
+  businessRegistrationNumber: string;
+  address: string;
+  businessPhone: string;
+  status: CompanyStatusEnum;
+  riskLevel: RiskLevelEnum;
+  fax?: string;
+  website?: string;
+}
+
+/**
  * 聯絡人 DTO
  * 極簡設計，用於 API 傳輸
  */
@@ -27,14 +67,14 @@ export interface CreateCompanyDto {
   fax?: string;
   website?: string;
   contacts?: ContactDto[];
-  dynamicWorkflow?: Record<string, unknown>; // 動態工作流程數據
+  dynamicWorkflow?: DynamicWorkflowData;
 }
 
 /**
  * 更新公司 DTO
  */
 export interface UpdateCompanyDto extends Partial<CreateCompanyDto> {
-  dynamicWorkflow?: Record<string, unknown>; // 動態工作流程數據
+  dynamicWorkflow?: DynamicWorkflowData;
 }
 
 /**
@@ -52,7 +92,7 @@ export interface CompanyResponseDto {
   fax: string;
   website: string;
   contacts: ContactDto[];
-  dynamicWorkflow?: Record<string, unknown>; // 動態工作流程數據
+  dynamicWorkflow?: DynamicWorkflowData;
   createdAt: string;
   updatedAt: string;
 }
