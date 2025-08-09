@@ -57,14 +57,14 @@ export class CompanyMapper {
    */
   toCreateCompanyDto(formValue: Record<string, unknown>): CreateCompanyDto {
     return {
-      companyName: formValue.companyName,
-      businessRegistrationNumber: formValue.businessRegistrationNumber,
-      address: formValue.address,
-      businessPhone: formValue.businessPhone,
-      status: formValue.status,
-      riskLevel: formValue.riskLevel,
-      fax: formValue.fax || '',
-      website: formValue.website || ''
+      companyName: formValue['companyName'] as string,
+      businessRegistrationNumber: formValue['businessRegistrationNumber'] as string,
+      address: formValue['address'] as string,
+      businessPhone: formValue['businessPhone'] as string,
+      status: formValue['status'] as CompanyStatusEnum,
+      riskLevel: formValue['riskLevel'] as RiskLevelEnum,
+      fax: (formValue['fax'] as string) || '',
+      website: (formValue['website'] as string) || ''
     };
   }
 
@@ -73,14 +73,14 @@ export class CompanyMapper {
    */
   toUpdateCompanyDto(formValue: Record<string, unknown>): UpdateCompanyDto {
     return {
-      companyName: formValue.companyName,
-      businessRegistrationNumber: formValue.businessRegistrationNumber,
-      address: formValue.address,
-      businessPhone: formValue.businessPhone,
-      status: formValue.status,
-      riskLevel: formValue.riskLevel,
-      fax: formValue.fax || '',
-      website: formValue.website || ''
+      companyName: formValue['companyName'] as string,
+      businessRegistrationNumber: formValue['businessRegistrationNumber'] as string,
+      address: formValue['address'] as string,
+      businessPhone: formValue['businessPhone'] as string,
+      status: formValue['status'] as CompanyStatusEnum,
+      riskLevel: formValue['riskLevel'] as RiskLevelEnum,
+      fax: (formValue['fax'] as string) || '',
+      website: (formValue['website'] as string) || ''
     };
   }
 }
