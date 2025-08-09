@@ -1,0 +1,114 @@
+ eslint --cache --fix
+
+
+> ng-alain@20.0.1 lint:style
+> npx stylelint 'src/**/*.less'
+
+
+src/app/routes/dashboard/analysis/analysis.component.less
+  44:9   ⚠  Expected "border-radius" to come before                    order/properties-order
+            "background-color"
+  49:11  ⚠  Expected "border-radius" to come before                    order/properties-order
+            "background-color"
+
+⚠ 2 problems (0 errors, 2 warnings)
+
+~/workspace$ 
+~/workspace$ 
+~/workspace$ 
+~/workspace$ yarn lint
+
+> ng-alain@20.0.1 lint:ts
+> npx eslint --cache --fix
+
+
+> ng-alain@20.0.1 lint:style
+> npx stylelint 'src/**/*.less'
+
+
+src/app/routes/dashboard/analysis/analysis.component.less
+  44:9  ⚠  Expected "border-radius" to come before "background-color"  order/properties-order
+
+⚠ 1 problem (0 errors, 1 warning)
+
+~/workspace$ yarn lint
+
+> ng-alain@20.0.1 lint:ts
+> npx eslint --cache --fix
+
+
+> ng-alain@20.0.1 lint:style
+> npx stylelint 'src/**/*.less'
+
+
+src/app/routes/dashboard/analysis/analysis.component.less
+  44:9   ⚠  Expected "border-radius" to come before                    order/properties-order
+            "background-color"
+  48:11  ⚠  Expected "border-radius" to come before "color"            order/properties-order
+
+⚠ 2 problems (0 errors, 2 warnings)
+
+~/workspace$ yarn lint
+
+> ng-alain@20.0.1 lint:ts
+> npx eslint --cache --fix
+
+
+> ng-alain@20.0.1 lint:style
+> npx stylelint 'src/**/*.less'
+
+
+src/app/routes/dashboard/analysis/analysis.component.less
+  44:9   ⚠  Expected "border-radius" to come before                    order/properties-order
+            "background-color"
+  49:11  ⚠  Expected "color" to come before "background-color"         order/properties-order
+
+⚠ 2 problems (0 errors, 2 warnings)
+
+~/workspace$ yarn lint
+
+> ng-alain@20.0.1 lint:ts
+> npx eslint --cache --fix
+
+
+> ng-alain@20.0.1 lint:style
+> npx stylelint 'src/**/*.less'
+
+
+src/app/routes/dashboard/analysis/analysis.component.less
+  43:9  ⚠  Expected "border-radius" to come before "text-align"  order/properties-order
+
+⚠ 1 problem (0 errors, 1 warning)
+
+~/workspace$ 
+~/workspace$ yarn lint
+
+> ng-alain@20.0.1 lint:ts
+> npx eslint --cache --fix
+
+
+> ng-alain@20.0.1 lint:style
+> npx stylelint 'src/**/*.less'
+
+
+src/app/routes/dashboard/analysis/analysis.component.less
+  43:9  ⚠  Expected "border-radius" to come before "text-align"  order/properties-order
+
+⚠ 1 problem (0 errors, 1 warning)
+
+~/workspace$ yarn lint
+
+> ng-alain@20.0.1 lint:ts
+> npx eslint --cache --fix
+
+
+> ng-alain@20.0.1 lint:style
+> npx stylelint 'src/**/*.less'
+
+
+src/app/routes/dashboard/analysis/analysis.component.less
+  42:9  ⚠  Expected "border-radius" to come before "line-height"  order/properties-order
+
+⚠ 1 problem (0 errors, 1 warning)
+
+~/workspace$ 
