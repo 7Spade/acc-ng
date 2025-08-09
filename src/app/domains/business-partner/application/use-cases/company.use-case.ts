@@ -38,7 +38,7 @@ export class CompanyUseCase {
           businessPhone: dto.businessPhone,
           fax: dto.fax,
           website: dto.website,
-          status: dto.status ? CompanyStatus.create(dto.status).value : existingCompany.status
+          status: dto.status ? CompanyStatus.create(dto.status).value : undefined
         });
 
         return updatedCompany;

@@ -21,8 +21,8 @@ export class CompanyMapper {
       businessRegistrationNumber: company.businessRegistrationNumber,
       address: company.address,
       businessPhone: company.businessPhone,
-      status: company.status,
-      riskLevel: company.riskLevel,
+      status: company.status as CompanyStatusEnum,
+      riskLevel: company.riskLevel as RiskLevelEnum,
       fax: company.fax,
       website: company.website,
       contacts: company.contacts.map(contact => ({

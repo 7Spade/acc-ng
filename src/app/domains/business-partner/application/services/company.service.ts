@@ -172,7 +172,7 @@ export class CompanyService {
     // Fetch the company, add contact, and update
     return this.repository.getById(companyId).pipe(
       switchMap(company => {
-        const updatedCompany = company.addContact(contact);
+        const updatedCompany = company!.addContact(contact);
         return this.repository.update(updatedCompany).pipe(
           map(savedCompany => {
             // Update local state
@@ -200,7 +200,7 @@ export class CompanyService {
     // Fetch the company, update contact, and save
     return this.repository.getById(companyId).pipe(
       switchMap(company => {
-        const updatedCompany = company.updateContact(contactIndex, contact);
+        const updatedCompany = company!.updateContact(contactIndex, contact);
         return this.repository.update(updatedCompany).pipe(
           map(savedCompany => {
             // Update local state
@@ -228,7 +228,7 @@ export class CompanyService {
     // Fetch the company, remove contact, and save
     return this.repository.getById(companyId).pipe(
       switchMap(company => {
-        const updatedCompany = company.removeContact(contactIndex);
+        const updatedCompany = company!.removeContact(contactIndex);
         return this.repository.update(updatedCompany).pipe(
           map(savedCompany => {
             // Update local state

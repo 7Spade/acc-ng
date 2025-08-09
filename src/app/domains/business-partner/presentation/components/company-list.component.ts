@@ -8,7 +8,7 @@ import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
@@ -19,6 +19,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { WorkflowDesignerComponent } from './workflow-designer.component';
 import { CreateCompanyDto, UpdateCompanyDto, CompanyResponseDto, ContactDto } from '../../application/dto/company.dto';
 import { CompanyService } from '../../application/services/company.service';
+import { CompanyMapper } from '../../application/mappers/company.mapper';
 import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
 import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
 
@@ -392,8 +393,9 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
 })
 export class CompanyListComponent implements OnInit {
   private readonly companyService = inject(CompanyService);
-  private readonly fb = inject(FormBuilder);
   private readonly message = inject(NzMessageService);
+  private readonly modal = inject(NzModalService);
+  private readonly companyMapper = inject(CompanyMapper);
 
   // 簡化狀態管理
   readonly searchQuery = signal('');
@@ -466,7 +468,7 @@ export class CompanyListComponent implements OnInit {
 
     if (mode === 'edit' && company) {
       this.editingCompanyId = company.id;
-      this.form.patchValue(company);
+      this.form.patchValue(this.companyMapper.toFormGroup(company));
     } else {
       this.form.reset({
         status: CompanyStatusEnum.Active,
@@ -492,8 +494,8 @@ export class CompanyListComponent implements OnInit {
 
     const operation =
       this.modalMode === 'create'
-        ? this.companyService.createCompany(formValue as CreateCompanyDto)
-        : this.companyService.updateCompany(this.editingCompanyId!, formValue as UpdateCompanyDto);
+        ? this.companyService.createCompany(this.companyMapper.toCreateCompanyDto(formValue))
+        : this.companyService.updateCompany(this.editingCompanyId!, this.companyMapper.toUpdateCompanyDto(formValue));
 
     operation.subscribe({
       next: () => {
