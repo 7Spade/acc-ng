@@ -5,6 +5,14 @@ import { Email } from '../value-objects/email.vo';
 import { UserId } from '../value-objects/user-id.vo';
 import { UserProfile } from '../value-objects/user-profile.vo';
 
+// 定義 FirebaseUser 的結構
+interface FirebaseUser {
+  uid: string;
+  email?: string | null;
+  displayName?: string | null;
+  photoURL?: string;
+}
+
 /**
  * 用戶實體
  * 封裝用戶的核心業務邏輯和規則
@@ -40,25 +48,23 @@ export class User extends BaseAggregateRoot<UserId> {
   /**
    * 從 Firebase 用戶創建
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static fromFirebaseUser(firebaseUser: any): User {
-    const email = Email.create(firebaseUser.email);
-    const profile = UserProfile.create(firebaseUser.displayName || 'User', firebaseUser.displayName || 'User');
+  static fromFirebaseUser(firebaseUser: FirebaseUser): User {
+    const email = Email.create(firebaseUser.email || '');
+    const profile = UserProfile.create(firebaseUser.displayName || 'Unknown', firebaseUser.displayName || 'Unknown');
 
-    return User.create(email, profile, firebaseUser.uid);
+    return User.create(UserId.create(firebaseUser.uid), email, profile);
   }
 
   /**
    * 從匿名 Firebase 用戶創建
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  static fromAnonymousUser(firebaseUser: any): User {
+  static fromAnonymousUser(firebaseUser: FirebaseUser): User {
     // 匿名用戶沒有 email，使用 uid 生成一個虛擬 email
     const anonymousEmail = `anonymous-${firebaseUser.uid}@anonymous.com`;
     const email = Email.create(anonymousEmail);
     const profile = UserProfile.create('Anonymous', 'User');
 
-    return User.create(email, profile, firebaseUser.uid);
+    return User.create(UserId.create(firebaseUser.uid), email, profile);
   }
 
   // Getters
@@ -104,7 +110,6 @@ export class User extends BaseAggregateRoot<UserId> {
   /**
    * 轉換為 @delon/auth 格式
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   toDelonAuthUser(): any {
     return {
       token: this.generateToken(),
@@ -115,6 +120,17 @@ export class User extends BaseAggregateRoot<UserId> {
       isAdmin: this._isAdmin,
       time: +new Date(),
       expired: +new Date() + 1000 * 60 * 60 * 24 // 24小時過期
+    };
+  }
+
+  /**
+   * 轉換為 Firebase 用戶格式
+   */
+  toFirebaseUser(): FirebaseUser {
+    return {
+      uid: this.id.value,
+      email: this.email.value,
+      displayName: this.profile.displayName
     };
   }
 

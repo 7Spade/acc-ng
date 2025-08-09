@@ -1,21 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import {
-  Auth,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  user,
-  signInAnonymously
-} from '@angular/fire/auth';
-import { DA_SERVICE_TOKEN } from '@delon/auth';
-import { Observable, from, map, of } from 'rxjs';
+import { Auth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, user, signInAnonymously } from '@angular/fire/auth';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
+import { _HttpClient } from '@delon/theme';
+import { NzSafeAny } from 'ng-zorro-antd/core/types';
+import { Observable, from, of, throwError } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 import { User } from '../../domain/entities/user.entity';
 import { Email } from '../../domain/value-objects/email.vo';
 import { UserProfile } from '../../domain/value-objects/user-profile.vo';
 
-import { LoginResponse } from '../dto/responses/login.response';
+import { LoginResponse, ApiErrorResponse, FirebaseUser } from '../dto/responses/login-response.dto';
 
 /**
  * @delon/auth Token 模型介面
@@ -163,7 +158,7 @@ export class AuthBridgeService {
    */
   private setDelonAuthToken(user: User): LoginResponse {
     const delonUser = user.toDelonAuthUser();
-    
+
     // 創建符合 @delon/auth 要求的 token 物件
     const tokenModel: DelonTokenModel = {
       token: `Bearer-${delonUser.id || 'token'}`,
