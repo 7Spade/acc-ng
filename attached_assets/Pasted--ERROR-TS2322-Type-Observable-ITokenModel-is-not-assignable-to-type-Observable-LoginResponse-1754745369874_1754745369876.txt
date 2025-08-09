@@ -1,0 +1,39 @@
+✘ [ERROR] TS2322: Type 'Observable<ITokenModel>' is not assignable to type 'Observable<LoginResponse>'.
+  Type 'ITokenModel' is not assignable to type 'LoginResponse'.
+    Types of property 'user' are incompatible.
+      Type '{ [key: string]: string | number | boolean; }' is missing the following properties from type '{ token: string; name: string; email: string; id: string; uid?: string | undefined; isAdmin: boolean; time: number; expired: number; }': token, name, email, id, and 3 more. [plugin angular-compiler]
+
+    src/app/domains/auth/application/use-cases/login.use-case.ts:24:8:
+      24 │         return this.authBridge.signInWithEmailPassword(command.ema...
+         ╵         ~~~~~~
+
+
+✘ [ERROR] TS2322: Type 'Observable<ITokenModel>' is not assignable to type 'Observable<LoginResponse>'.
+  Type 'ITokenModel' is not assignable to type 'LoginResponse'.
+    Types of property 'user' are incompatible.
+      Type '{ [key: string]: string | number | boolean; }' is missing the following properties from type '{ token: string; name: string; email: string; id: string; uid?: string | undefined; isAdmin: boolean; time: number; expired: number; }': token, name, email, id, and 3 more. [plugin angular-compiler]
+
+    src/app/domains/auth/application/use-cases/login.use-case.ts:27:8:
+      27 │         return this.authBridge.signInWithGoogle();
+         ╵         ~~~~~~
+
+
+✘ [ERROR] TS4111: Property 'expired' comes from an index signature, so it must be accessed with ['expired']. [plugin angular-compiler]
+
+    src/app/routes/passport/login/login.component.ts:222:19:
+      222 │           res.user.expired = +new Date() + 1000 * 60 * 60 * 24; /...
+          ╵                    ~~~~~~~
+
+
+✘ [ERROR] TS2345: Argument of type '{ [key: string]: string | number | boolean; }' is not assignable to parameter of type 'ITokenModel'.
+  Property 'token' is missing in type '{ [key: string]: string | number | boolean; }' but required in type 'ITokenModel'. [plugin angular-compiler]
+
+    src/app/routes/passport/login/login.component.ts:223:32:
+      223 │           this.tokenService.set(res.user);
+          ╵                                 ~~~~~~~~
+
+  'token' is declared here.
+
+    node_modules/@delon/auth/index.d.ts:11:4:
+      11 │     token: string | null | undefined;
+         ╵     ~~~~~
