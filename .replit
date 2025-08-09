@@ -1,0 +1,8 @@
+modules = ["nodejs-20", "web", "bash"]
+run = "yarn run start"
+
+[nix]
+channel = "stable-25_05"
+
+[deployment]
+run = ["sh", "-c", "yarn run start"]
