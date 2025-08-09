@@ -7,6 +7,8 @@ export abstract class CompanyRepository {
   abstract getAll(): Observable<Company[]>;
   abstract getById(id: string): Observable<Company | null>;
   abstract save(company: Company): Observable<Company>;
+  abstract create(company: Company): Observable<Company>;
+  abstract update(company: Company): Observable<Company>;
   abstract delete(id: string): Observable<void>;
   abstract search(query: string): Observable<Company[]>;
 }

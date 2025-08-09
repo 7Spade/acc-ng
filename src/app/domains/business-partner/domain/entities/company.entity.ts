@@ -28,8 +28,8 @@ export class Company {
     public businessRegistrationNumber: string,
     public address: string,
     public businessPhone: string,
-    public status: CompanyStatusEnum = CompanyStatusEnum.Active,
-    public riskLevel: RiskLevelEnum = RiskLevelEnum.Low,
+    public status: string = 'active',
+    public riskLevel: string = 'low',
     public fax = '',
     public website = '',
     public contacts: Contact[] = [],
@@ -49,8 +49,8 @@ export class Company {
       props.businessRegistrationNumber.trim(),
       props.address.trim(),
       props.businessPhone.trim(),
-      props.status || CompanyStatusEnum.Active,
-      props.riskLevel || RiskLevelEnum.Low,
+      props.status || 'active',
+      props.riskLevel || 'low',
       props.fax?.trim() || '',
       props.website?.trim() || '',
       props.contacts || []
@@ -142,11 +142,11 @@ export class Company {
   }
 
   isActive(): boolean {
-    return this.status === CompanyStatusEnum.Active;
+    return this.status === 'active';
   }
 
   isHighRisk(): boolean {
-    return this.riskLevel === RiskLevelEnum.High;
+    return this.riskLevel === 'high';
   }
 
   getPrimaryContact(): Contact | null {

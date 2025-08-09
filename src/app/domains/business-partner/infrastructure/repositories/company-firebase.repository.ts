@@ -29,40 +29,41 @@ export class CompanyFirebaseRepository implements CompanyRepository {
 
   save(company: Company): Observable<Company> {
     const isNewCompany = !company.id || company.id === '';
+    return isNewCompany ? this.create(company) : this.update(company);
+  }
 
-    if (isNewCompany) {
-      // Create new
-      const companiesRef = collection(this.firestore, this.collectionName);
-      const data = company.toPlainObject();
-      delete data['id'];
+  create(company: Company): Observable<Company> {
+    const companiesRef = collection(this.firestore, this.collectionName);
+    const data = company.toPlainObject();
+    delete data['id'];
 
-      return from(addDoc(companiesRef, data)).pipe(
-        map(
-          docRef =>
-            new Company(
-              docRef.id,
-              company.companyName,
-              company.businessRegistrationNumber,
-              company.address,
-              company.businessPhone,
-              company.status,
-              company.riskLevel,
-              company.fax,
-              company.website,
-              company.contacts,
-              company.createdAt,
-              new Date()
-            )
-        )
-      );
-    } else {
-      // Update existing
-      const docRef = doc(this.firestore, this.collectionName, company.id);
-      const data = company.toPlainObject();
-      delete data['id'];
+    return from(addDoc(companiesRef, data)).pipe(
+      map(
+        docRef =>
+          new Company(
+            docRef.id,
+            company.companyName,
+            company.businessRegistrationNumber,
+            company.address,
+            company.businessPhone,
+            company.status,
+            company.riskLevel,
+            company.fax,
+            company.website,
+            company.contacts,
+            company.createdAt,
+            new Date()
+          )
+      )
+    );
+  }
 
-      return from(updateDoc(docRef, data)).pipe(map(() => company));
-    }
+  update(company: Company): Observable<Company> {
+    const docRef = doc(this.firestore, this.collectionName, company.id);
+    const data = company.toPlainObject();
+    delete data['id'];
+
+    return from(updateDoc(docRef, data as any)).pipe(map(() => company));
   }
 
   delete(id: string): Observable<void> {

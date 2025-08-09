@@ -120,6 +120,9 @@ export class CompanyService {
     // Fetch the existing company to apply updates
     return this.repository.getById(id).pipe(
       switchMap(company => {
+        if (!company) {
+          throw new Error(`Company with id ${id} not found`);
+        }
         const updatedCompany = company.update(props);
         return this.repository.update(updatedCompany).pipe(
           map(savedCompany => {
