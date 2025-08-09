@@ -19,8 +19,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { WorkflowDesignerComponent } from './workflow-designer.component';
 import { ContactDto } from '../../application/dto/company.dto';
 import { CompanyMapper } from '../../application/mappers/company.mapper';
-import { Company } from '../../domain/entities/company.entity';
 import { CompanyService } from '../../application/services/company.service';
+import { Company } from '../../domain/entities/company.entity';
 import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
 import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
 
