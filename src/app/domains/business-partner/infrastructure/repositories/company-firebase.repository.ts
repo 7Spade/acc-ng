@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, UpdateData } from '@angular/fire/firestore';
 import { Observable, from, map } from 'rxjs';
 
 import { Company, Contact } from '../../domain/entities/company.entity';
@@ -63,7 +63,7 @@ export class CompanyFirebaseRepository implements CompanyRepository {
     const data = company.toPlainObject();
     delete data['id'];
 
-    return from(updateDoc(docRef, data as Record<string, unknown>)).pipe(map(() => company));
+    return from(updateDoc(docRef, data as UpdateData<any>)).pipe(map(() => company));
   }
 
   delete(id: string): Observable<void> {
