@@ -1,6 +1,6 @@
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { of, from, catchError } from 'rxjs';
+import { of, from, catchError, map } from 'rxjs';
 
 import { AuthBridgeService } from '../../application/services/auth-bridge.service';
 
@@ -17,6 +17,13 @@ export const firebaseAuthInterceptor: HttpInterceptorFn = (req, next) => {
     try {
       // 執行登入
       return from(authBridge.signInWithEmailPassword(body.userName, body.password)).pipe(
+        map(loginResponse => {
+          // 將 LoginResponse 包裝成 HttpResponse
+          return new HttpResponse({
+            status: 200,
+            body: loginResponse
+          });
+        }),
         catchError((error: unknown) => {
           console.error('Firebase Auth Error:', error);
 
