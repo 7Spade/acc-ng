@@ -40,7 +40,8 @@ function genData(params: any): { total: number; list: any[] } {
     ret = ret.filter(data => data.no.indexOf(params.no) > -1);
   }
 
-  return { total: ret.length, list: ret.slice(start, ps * pi) };
+  const start = (pi - 1) * ps;
+  return { total: ret.length, list: ret.slice(start, start + ps) };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

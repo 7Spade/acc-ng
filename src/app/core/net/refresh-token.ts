@@ -1,6 +1,7 @@
 import { HttpClient, HttpHandlerFn, HttpRequest, HttpResponseBase } from '@angular/common/http';
 import { EnvironmentProviders, Injector, inject, provideAppInitializer } from '@angular/core';
 import { DA_SERVICE_TOKEN } from '@delon/auth';
+import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError } from 'rxjs';
 
 import { toLogin } from './helper';
@@ -85,9 +86,9 @@ function buildAuthRefresh(injector: Injector): void {
       next: res => {
         // TODO: Mock expired value
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const data = (req as NzSafeAny).body || (req as NzSafeAny);
+        const data = (res as NzSafeAny).body || (res as NzSafeAny);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            if (+new Date() >= data.expired) {
+        if (+new Date() >= data.expired) {
           res.expired = +new Date() + 1000 * 60 * 5;
         }
         refreshToking = false;
