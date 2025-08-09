@@ -49,8 +49,7 @@ export class AuthBridgeService {
   /**
    * 使用 Google 登入
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  signInWithGoogle(): Observable<any> {
+  signInWithGoogle(): Observable<ITokenModel> {
     const provider = new GoogleAuthProvider();
     return from(signInWithPopup(this.firebaseAuth, provider)).pipe(
       map(credential => {
@@ -64,8 +63,7 @@ export class AuthBridgeService {
   /**
    * 匿名登入
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  signInAnonymously(): Observable<any> {
+  signInAnonymously(): Observable<ITokenModel> {
     return from(signInAnonymously(this.firebaseAuth)).pipe(
       map(credential => {
         const firebaseUser = credential.user;
