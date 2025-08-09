@@ -72,13 +72,13 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
       </div>
 
       <!-- 載入狀態 -->
-      <div *ngIf="companyService.loading()" class="loading-container">
+      <div *ngIf="isLoading()" class="loading-container">
         <nz-spin nzSize="large" nzTip="載入中..."></nz-spin>
       </div>
 
       <!-- 空狀態 -->
       <nz-empty
-        *ngIf="!companyService.loading() && !companyService.hasCompanies()"
+        *ngIf="!isLoading() && !hasCompanies()"
         nzNotFoundImage="simple"
         nzNotFoundContent="尚無合作夥伴資料"
       >
@@ -89,7 +89,7 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
 
       <!-- 公司列表 -->
       <nz-table
-        *ngIf="!companyService.loading() && companyService.hasCompanies()"
+        *ngIf="!isLoading() && hasCompanies()"
         [nzData]="filteredCompanies()"
         [nzPageSize]="10"
         [nzShowSizeChanger]="true"
@@ -575,7 +575,7 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
   ]
 })
 export class CompanyListComponent implements OnInit {
-  private readonly companyService = inject(CompanyService);
+  public readonly companyService = inject(CompanyService);
   private readonly fb = inject(FormBuilder);
   private readonly message = inject(NzMessageService);
 
@@ -636,6 +636,8 @@ export class CompanyListComponent implements OnInit {
   // Computed
   readonly isSubmitting = this.isSubmittingSignal.asReadonly();
   readonly searchQuery = this.searchQuerySignal.asReadonly();
+  readonly isLoading = computed(() => this.companyService.loading());
+  readonly hasCompanies = computed(() => this.companyService.hasCompanies());
   readonly filteredCompanies = computed(() => {
     const query = this.searchQuerySignal().toLowerCase().trim();
     const companies = this.companyService.companies();
