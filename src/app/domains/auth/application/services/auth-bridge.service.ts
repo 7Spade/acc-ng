@@ -18,10 +18,11 @@ import { LoginResponse, ApiErrorResponse, FirebaseUser } from '../dto/responses/
 interface DelonTokenModel {
   token: string;
   name: string;
-  email: string;
+  email: string | null;
   id: string;
   uid?: string;
   isAdmin: boolean;
+  isAnonymous?: boolean;
   time: number;
   expired: number;
 }
@@ -125,11 +126,9 @@ export class AuthBridgeService {
     if (delonUser['uid']) {
       // 處理匿名用戶（沒有email的情況）
       const userEmail = delonUser['email'];
-      if (!userEmail) {
-        // 匿名用戶，使用uid作為email
-        const email = Email.create(`anonymous-${delonUser['uid']}@anonymous.com`);
-        const profile = UserProfile.create('Anonymous', 'User');
-        return User.create(email, profile, delonUser['uid']);
+      if (!userEmail || delonUser['isAnonymous']) {
+        // 匿名用戶，直接創建匿名用戶
+        return User.createAnonymous(delonUser['uid']);
       }
 
       const email = Email.create(userEmail);
@@ -163,10 +162,11 @@ export class AuthBridgeService {
     const tokenModel: DelonTokenModel = {
       token: `Bearer-${delonUser.id || 'token'}`,
       name: delonUser.name || 'User',
-      email: delonUser.email || '',
+      email: delonUser.email || null,
       id: delonUser.id || '',
       uid: delonUser.uid,
       isAdmin: delonUser.isAdmin || false,
+      isAnonymous: delonUser.isAnonymous || false,
       time: +new Date(),
       expired: +new Date() + 1000 * 60 * 60 * 24 // 24小時後過期
     };
