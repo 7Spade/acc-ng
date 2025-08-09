@@ -70,9 +70,9 @@ export class CompanyFirebaseRepository implements CompanyRepository {
       data.businessPhone as string,
       data.status as string,
       data.riskLevel as string,
-      data.fax as string || '',
-      data.website as string || '',
-      data.contacts as any[] || [],
+      (data.fax as string) || '',
+      (data.website as string) || '',
+      (data.contacts as any[]) || [],
       new Date(data.createdAt as any),
       new Date(data.updatedAt as any)
     );

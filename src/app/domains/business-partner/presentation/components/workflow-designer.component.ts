@@ -14,8 +14,8 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 
 import { WorkflowService } from '../../application/services/workflow.service';
-import { DynamicWorkflowState, DynamicStateTransition } from '../../domain/value-objects/dynamic-workflow-state.vo';
 import { WorkflowStep } from '../../domain/interfaces/workflow-step.interface';
+import { DynamicWorkflowState, DynamicStateTransition } from '../../domain/value-objects/dynamic-workflow-state.vo';
 
 @Component({
   selector: 'app-workflow-designer',
