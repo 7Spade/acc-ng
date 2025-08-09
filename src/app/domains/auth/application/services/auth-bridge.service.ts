@@ -63,7 +63,7 @@ export class AuthBridgeService {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL
+          photoURL: firebaseUser.photoURL || null
         };
         const user = User.fromFirebaseUser(convertedUser);
         return this.setDelonAuthToken(user);
@@ -84,7 +84,7 @@ export class AuthBridgeService {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL
+          photoURL: firebaseUser.photoURL || null
         };
         const user = User.fromFirebaseUser(convertedUser);
         return this.setDelonAuthToken(user);
@@ -104,7 +104,7 @@ export class AuthBridgeService {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL
+          photoURL: firebaseUser.photoURL || null
         };
         // 匿名用戶沒有 email，需要特殊處理
         const user = User.fromAnonymousUser(convertedUser);
@@ -136,7 +136,7 @@ export class AuthBridgeService {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL
+          photoURL: firebaseUser.photoURL || null
         };
         return User.fromFirebaseUser(convertedUser);
       })
