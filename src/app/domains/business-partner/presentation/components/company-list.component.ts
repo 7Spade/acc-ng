@@ -609,7 +609,7 @@ export class CompanyListComponent implements OnInit {
     this.workflowCompanyId.set('');
   }
 
-  private markFormTouched<T extends Record<string, any>>(form: FormGroup<any> = this.form): void {
+  private markFormTouched(form: FormGroup = this.form): void {
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);
       control?.markAsTouched();
