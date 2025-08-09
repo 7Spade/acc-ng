@@ -95,13 +95,13 @@ export const appConfig: ApplicationConfig = {
     ...providers,
     provideFirebaseApp(() =>
       initializeApp({
-        projectId: 'ng-acc',
-        appId: '1:289956121604:web:4dd9d608a2db962aeaf951',
-        storageBucket: 'ng-acc.firebasestorage.app',
-        apiKey: 'AIzaSyCmWn3NJBClxZeJHsg-eaEaqA3bdB9bzOQ',
-        authDomain: 'ng-acc.firebaseapp.com',
-        messagingSenderId: '289956121604',
-        measurementId: 'G-6YM5S9LCNV'
+        projectId: 'acc-ng',
+        appId: '1:713375778540:web:ddf84d3016300c2abb87c9',
+        storageBucket: 'acc-ng.firebasestorage.app',
+        apiKey: 'AIzaSyD0mftbDKLDXTDttoXUQwnHNQUeJEwADQc',
+        authDomain: 'acc-ng.firebaseapp.com',
+        messagingSenderId: '713375778540',
+        measurementId: 'G-FWEJ2HQYZD'
       })
     ),
     provideAuth_alias(() => getAuth()),

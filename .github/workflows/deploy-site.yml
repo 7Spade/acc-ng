@@ -5,6 +5,7 @@ name: Deploy website
 on:
   push:
     branches:
+      - 'main'
       - 'publish-**'
 
 jobs:
@@ -31,7 +32,7 @@ jobs:
         with:
           login: ${{ secrets.SURGE_LOGIN }}
           token: ${{ secrets.SURGE_TOKEN }}
-          domain: https://ng-ac.surge.sh
+          domain: https://acc-ng.surge.sh
           project: ./dist/ng-alain/browser
 
       - name: Replace base href for gh-pages
