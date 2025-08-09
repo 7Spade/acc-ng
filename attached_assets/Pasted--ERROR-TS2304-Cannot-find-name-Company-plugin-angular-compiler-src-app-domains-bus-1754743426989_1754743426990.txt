@@ -1,0 +1,231 @@
+
+✘ [ERROR] TS2304: Cannot find name 'Company'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/exceptions/company.exceptions.ts:47:55:
+      47 │   static isCompanyExists(company: unknown): company is Company {
+         ╵                                                        ~~~~~~~
+
+
+✘ [ERROR] Could not resolve "./use-cases/update-company.use-case"
+
+    src/app/domains/business-partner/application/index.ts:6:14:
+      6 │ export * from './use-cases/update-company.use-case';
+        ╵               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2307: Cannot find module './use-cases/update-company.use-case' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/index.ts:7:14:
+      7 │ export * from './use-cases/update-company.use-case';
+        ╵               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] Could not resolve "./use-cases/update-company-contact.use-case"
+
+    src/app/domains/business-partner/application/index.ts:8:14:
+      8 │ export * from './use-cases/update-company-contact.use-case';
+        ╵               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2307: Cannot find module './use-cases/update-company-contact.use-case' or its corresponding type declarations. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/index.ts:9:14:
+      9 │ export * from './use-cases/update-company-contact.use-case';
+        ╵               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2339: Property 'create' does not exist on type 'CompanyRepository'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:69:27:
+      69 │     return this.repository.create(company).pipe(
+         ╵                            ~~~~~~
+
+
+✘ [ERROR] TS2322: Type 'unknown' is not assignable to type 'Company'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:72:50:
+      72 │ ...companiesSignal.update(companies => [...companies, savedCompany]);
+         ╵                                         ~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2322: Type 'unknown' is not assignable to type 'Company'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:72:64:
+      72 │ ...companiesSignal.update(companies => [...companies, savedCompany]);
+         ╵                                                       ~~~~~~~~~~~~
+
+
+✘ [ERROR] TS18047: 'company' is possibly 'null'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:123:31:
+      123 │         const updatedCompany = company.update(props);
+          ╵                                ~~~~~~~
+
+
+✘ [ERROR] TS2339: Property 'update' does not exist on type 'CompanyRepository'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:124:31:
+      124 │         return this.repository.update(updatedCompany).pipe(
+          ╵                                ~~~~~~
+
+
+✘ [ERROR] TS2322: Type 'unknown[]' is not assignable to type 'Company[]'.
+  Type 'unknown' is not assignable to type 'Company'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:127:53:
+      127 │ ...mpanies => companies.map(c => (c.id === id ? savedCompany : c)));
+          ╵               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The expected type comes from the return type of this signature.
+
+    node_modules/@angular/core/chrome_dev_tools_performance.d.d.ts:51:21:
+      51 │     update(updateFn: (value: T) => T): void;
+         ╵                      ~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS18047: 'company' is possibly 'null'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:172:31:
+      172 │         const updatedCompany = company.addContact(contact);
+          ╵                                ~~~~~~~
+
+
+✘ [ERROR] TS2339: Property 'update' does not exist on type 'CompanyRepository'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:173:31:
+      173 │         return this.repository.update(updatedCompany).pipe(
+          ╵                                ~~~~~~
+
+
+✘ [ERROR] TS2322: Type 'unknown[]' is not assignable to type 'Company[]'.
+  Type 'unknown' is not assignable to type 'Company'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:176:53:
+      176 │ ...panies => companies.map(c => (c.id === companyId ? savedCompan...
+          ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The expected type comes from the return type of this signature.
+
+    node_modules/@angular/core/chrome_dev_tools_performance.d.d.ts:51:21:
+      51 │     update(updateFn: (value: T) => T): void;
+         ╵                      ~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS18047: 'company' is possibly 'null'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:200:31:
+      200 │         const updatedCompany = company.updateContact(contactIndex...
+          ╵                                ~~~~~~~
+
+
+✘ [ERROR] TS2339: Property 'update' does not exist on type 'CompanyRepository'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:201:31:
+      201 │         return this.repository.update(updatedCompany).pipe(
+          ╵                                ~~~~~~
+
+
+✘ [ERROR] TS2322: Type 'unknown[]' is not assignable to type 'Company[]'.
+  Type 'unknown' is not assignable to type 'Company'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:204:53:
+      204 │ ...panies => companies.map(c => (c.id === companyId ? savedCompan...
+          ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The expected type comes from the return type of this signature.
+
+    node_modules/@angular/core/chrome_dev_tools_performance.d.d.ts:51:21:
+      51 │     update(updateFn: (value: T) => T): void;
+         ╵                      ~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS18047: 'company' is possibly 'null'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:228:31:
+      228 │         const updatedCompany = company.removeContact(contactIndex);
+          ╵                                ~~~~~~~
+
+
+✘ [ERROR] TS2339: Property 'update' does not exist on type 'CompanyRepository'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:229:31:
+      229 │         return this.repository.update(updatedCompany).pipe(
+          ╵                                ~~~~~~
+
+
+✘ [ERROR] TS2322: Type 'unknown[]' is not assignable to type 'Company[]'.
+  Type 'unknown' is not assignable to type 'Company'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/company.service.ts:232:53:
+      232 │ ...panies => companies.map(c => (c.id === companyId ? savedCompan...
+          ╵              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The expected type comes from the return type of this signature.
+
+    node_modules/@angular/core/chrome_dev_tools_performance.d.d.ts:51:21:
+      51 │     update(updateFn: (value: T) => T): void;
+         ╵                      ~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2345: Argument of type '{}' is not assignable to parameter of type 'Record<string, unknown>'.
+  Index signature for type 'string' is missing in type '{}'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/services/workflow.service.ts:52:77:
+      52 │ ...owStateVO.fromPlainObject(workflowData) : DynamicWorkflowStateV...
+         ╵                              ~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2339: Property 'create' does not exist on type 'CompanyRepository'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/use-cases/create-company.use-case.ts:31:34:
+      31 │ ...eturn this.companyRepository.create(company).pipe(map(savedComp...
+         ╵                                 ~~~~~~
+
+
+✘ [ERROR] TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Company'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/application/use-cases/create-company.use-case.ts:31:108:
+      31 │ ...(savedCompany => this.companyMapper.toResponseDto(savedCompany)));
+         ╵                                                      ~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2308: Module './entities/company.entity' has already exported a member named 'Contact'. Consider explicitly re-exporting to resolve the ambiguity. [plugin angular-compiler]
+
+    src/app/domains/business-partner/domain/index.ts:3:0:
+      3 │ export * from './entities/contact.entity';
+        ╵ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2345: Argument of type 'Record<string, unknown>' is not assignable to parameter of type '{ [x: string]: FieldValue | Partial<unknown> | undefined; }'.
+  'string' index signatures are incompatible.
+    Type 'unknown' is not assignable to type 'FieldValue | Partial<unknown> | undefined'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/infrastructure/repositories/company-firebase.repository.ts:64:36:
+      64 │       return from(updateDoc(docRef, data)).pipe(map(() => company));
+         ╵                                     ~~~~
+
+
+✘ [ERROR] TS2345: Argument of type 'string' is not assignable to parameter of type 'CompanyStatusEnum | undefined'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/infrastructure/repositories/company-firebase.repository.ts:93:6:
+      93 │       data['status'] as string,
+         ╵       ~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+✘ [ERROR] TS2345: Argument of type 'Company' is not assignable to parameter of type 'CompanyResponseDto'.
+  Types of property 'createdAt' are incompatible.
+    Type 'Date' is not assignable to type 'string'. [plugin angular-compiler]
+
+    src/app/domains/business-partner/presentation/components/company-list.component.ts:123:90:
+      123 │ ...zType="link" nzSize="small" (click)="openModal('edit', company)">
+          ╵                                                           ~~~~~~~
+
+
+✘ [ERROR] TS2345: Argument of type 'FormGroup<ɵNullableFormControls<{ name: (string | ((control: AbstractControl<any, any, any>) => ValidationErrors | null)[])[]; title: string[]; email: (string | ((control: AbstractControl<any, any, any>) => ValidationErrors | null)[])[]; phone: string[]; isPrimary: boolean[]; }>>' is not assignable to parameter of type 'FormGroup<ɵNullableFormControls<{ companyName: (string | ((control: AbstractControl<any, any, any>) => ValidationErrors | null)[])[]; businessRegistrationNumber: (string | ((control: AbstractControl<...>) => ValidationErrors | null)[])[]; ... 5 more ...; website: string[]; }>>'.
+  Types of property 'controls' are incompatible.
+    Type 'ɵNullableFormControls<{ name: (string | ((control: AbstractControl<any, any, any>) => ValidationErrors | null)[])[]; title: string[]; email: (string | ((control: AbstractControl<any, any, any>) => ValidationErrors | null)[])[]; phone: string[]; isPrimary: boolean[]; }>' is missing the following properties from type 'ɵNullableFormControls<{ companyName: (string | ((control: AbstractControl<any, any, any>) => ValidationErrors | null)[])[]; businessRegistrationNumber: (string | ((control: AbstractControl<...>) => ValidationErrors | null)[])[]; ... 5 more ...; website: string[]; }>': companyName, businessRegistrationNumber, address, businessPhone, and 4 more. [plugin angular-compiler]
+
+    src/app/domains/business-partner/presentation/components/company-list.component.ts:537:27:
+      537 │       this.markFormTouched(this.contactForm);
+          ╵                            ~~~~~~~~~~~~~~~~
+
