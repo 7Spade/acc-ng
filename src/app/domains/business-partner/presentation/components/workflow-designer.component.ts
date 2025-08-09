@@ -15,6 +15,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 
 import { WorkflowService } from '../../application/services/workflow.service';
 import { DynamicWorkflowState, DynamicStateTransition } from '../../domain/value-objects/dynamic-workflow-state.vo';
+import { WorkflowStep } from '../../domain/interfaces/workflow-step.interface';
 
 @Component({
   selector: 'app-workflow-designer',
@@ -499,7 +500,7 @@ export class WorkflowDesignerComponent implements OnInit, OnDestroy {
   @Input() companyId = '';
 
   // 簡化狀態管理
-  readonly editingState = signal<any | null>(null);
+  readonly editingState = signal<DynamicWorkflowState | null>(null);
 
   // 表單狀態
   stateForm = {
@@ -572,7 +573,7 @@ export class WorkflowDesignerComponent implements OnInit, OnDestroy {
     });
   }
 
-  editState(state: any): void {
+  editState(state: DynamicWorkflowState): void {
     this.editingState.set(state);
     this.stateForm.name = state.name;
     this.stateForm.description = state.description;

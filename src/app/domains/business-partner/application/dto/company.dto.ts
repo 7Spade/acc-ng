@@ -27,13 +27,14 @@ export interface CreateCompanyDto {
   fax?: string;
   website?: string;
   contacts?: ContactDto[];
+  dynamicWorkflow?: Record<string, unknown>; // 動態工作流程數據
 }
 
 /**
  * 更新公司 DTO
  */
 export interface UpdateCompanyDto extends Partial<CreateCompanyDto> {
-  dynamicWorkflow?: any; // 動態工作流程數據
+  dynamicWorkflow?: Record<string, unknown>; // 動態工作流程數據
 }
 
 /**
@@ -51,7 +52,7 @@ export interface CompanyResponseDto {
   fax: string;
   website: string;
   contacts: ContactDto[];
-  dynamicWorkflow?: any; // 動態工作流程數據
+  dynamicWorkflow?: Record<string, unknown>; // 動態工作流程數據
   createdAt: string;
   updatedAt: string;
 }

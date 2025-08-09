@@ -41,7 +41,9 @@ export class CompanyValidationHelper {
   /**
    * 類型守衛：檢查公司是否存在
    */
-  static isCompanyExists(company: any): company is NonNullable<typeof company> {
+  static isCompanyExists(company: unknown): company is Company {
+    return company !== null && company !== undefined;
+  }ny: any): company is NonNullable<typeof company> {
     return company !== null && company !== undefined;
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where } from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { Observable, from, map } from 'rxjs';
 
 import { Company } from '../../domain/entities/company.entity';
@@ -61,20 +61,20 @@ export class CompanyFirebaseRepository implements CompanyRepository {
   }
 
   private mapDocToCompany(doc: any): Company {
-    const data = doc.data();
+    const data = doc.data() as Record<string, unknown>;
     return new Company(
       doc.id,
-      data.companyName,
-      data.businessRegistrationNumber,
-      data.address,
-      data.businessPhone,
-      data.status,
-      data.riskLevel,
-      data.fax || '',
-      data.website || '',
-      data.contacts || [],
-      new Date(data.createdAt),
-      new Date(data.updatedAt)
+      data.companyName as string,
+      data.businessRegistrationNumber as string,
+      data.address as string,
+      data.businessPhone as string,
+      data.status as string,
+      data.riskLevel as string,
+      data.fax as string || '',
+      data.website as string || '',
+      data.contacts as any[] || [],
+      new Date(data.createdAt as any),
+      new Date(data.updatedAt as any)
     );
   }
 }

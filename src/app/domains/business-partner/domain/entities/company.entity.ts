@@ -97,6 +97,50 @@ export class Company {
     );
   }
 
+  updateContact(contactIndex: number, contact: Contact): Company {
+    const contacts = [...this.contacts];
+    if (contactIndex >= 0 && contactIndex < contacts.length) {
+      contacts[contactIndex] = contact;
+    }
+
+    return new Company(
+      this.id,
+      this.companyName,
+      this.businessRegistrationNumber,
+      this.address,
+      this.businessPhone,
+      this.status,
+      this.riskLevel,
+      this.fax,
+      this.website,
+      contacts,
+      this.createdAt,
+      new Date()
+    );
+  }
+
+  removeContact(contactIndex: number): Company {
+    const contacts = [...this.contacts];
+    if (contactIndex >= 0 && contactIndex < contacts.length) {
+      contacts.splice(contactIndex, 1);
+    }
+
+    return new Company(
+      this.id,
+      this.companyName,
+      this.businessRegistrationNumber,
+      this.address,
+      this.businessPhone,
+      this.status,
+      this.riskLevel,
+      this.fax,
+      this.website,
+      contacts,
+      this.createdAt,
+      new Date()
+    );
+  }
+
   isActive(): boolean {
     return this.status === CompanyStatusEnum.Active;
   }

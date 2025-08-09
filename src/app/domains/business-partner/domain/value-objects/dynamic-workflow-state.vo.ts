@@ -275,32 +275,32 @@ export class DynamicWorkflowStateVO extends ValueObject<{
   /**
    * 序列化為普通物件
    */
-  toPlainObject(): any {
-    return {
-      states: this.states,
-      transitions: this.transitions,
-      currentStateId: this.currentStateId,
-      executionHistory: this.executionHistory.map(h => ({
-        ...h,
-        timestamp: h.timestamp.toISOString()
-      }))
-    };
+  toPlainObject(): Record<string, unknown> {
+    const result: Record<string, unknown> = {};
+    result.states = this.states;
+    result.transitions = this.transitions;
+    result.currentStateId = this.currentStateId;
+    result.executionHistory = this.executionHistory.map(h => ({
+      ...h,
+      timestamp: h.timestamp.toISOString()
+    }));
+    return result;
   }
 
   /**
    * 從普通物件反序列化
    */
-  static fromPlainObject(data: any): DynamicWorkflowStateVO {
+  static fromPlainObject(data: Record<string, unknown>): DynamicWorkflowStateVO {
     const executionHistory =
-      data.executionHistory?.map((h: any) => ({
+      (data.executionHistory as WorkflowExecutionHistory[])?.map((h: WorkflowExecutionHistory) => ({
         ...h,
         timestamp: new Date(h.timestamp)
       })) || [];
 
     return new DynamicWorkflowStateVO({
-      states: data.states || [],
-      transitions: data.transitions || [],
-      currentStateId: data.currentStateId || '',
+      states: (data.states as DynamicWorkflowState[]) || [],
+      transitions: (data.transitions as DynamicStateTransition[]) || [],
+      currentStateId: (data.currentStateId as string) || '',
       executionHistory
     });
   }

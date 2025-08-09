@@ -1,5 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { Observable, map, catchError, finalize, of } from 'rxjs';
+import { Observable, map, catchError, finalize, of, switchMap } from 'rxjs';
 
 import { Company, CreateCompanyProps, Contact } from '../../domain/entities/company.entity';
 import { COMPANY_REPOSITORY } from '../../domain/repositories/company.repository';
@@ -119,12 +119,15 @@ export class CompanyService {
 
     // Fetch the existing company to apply updates
     return this.repository.getById(id).pipe(
-      map(company => company.update(props)), // Apply updates using the entity's method
-      map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
-      map(updatedCompany => {
-        // Update local state
-        this.companiesSignal.update(companies => companies.map(c => (c.id === id ? updatedCompany : c)));
-        return updatedCompany;
+      switchMap(company => {
+        const updatedCompany = company.update(props);
+        return this.repository.update(updatedCompany).pipe(
+          map(savedCompany => {
+            // Update local state
+            this.companiesSignal.update(companies => companies.map(c => (c.id === id ? savedCompany : c)));
+            return savedCompany;
+          })
+        );
       }),
       finalize(() => this.loadingSignal.set(false)),
       catchError(error => {
@@ -165,12 +168,15 @@ export class CompanyService {
 
     // Fetch the company, add contact, and update
     return this.repository.getById(companyId).pipe(
-      map(company => company.addContact(contact)), // Add contact using entity method
-      map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
-      map(updatedCompany => {
-        // Update local state
-        this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? updatedCompany : c)));
-        return updatedCompany;
+      switchMap(company => {
+        const updatedCompany = company.addContact(contact);
+        return this.repository.update(updatedCompany).pipe(
+          map(savedCompany => {
+            // Update local state
+            this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? savedCompany : c)));
+            return savedCompany;
+          })
+        );
       }),
       finalize(() => this.loadingSignal.set(false)),
       catchError(error => {
@@ -190,12 +196,15 @@ export class CompanyService {
 
     // Fetch the company, update contact, and save
     return this.repository.getById(companyId).pipe(
-      map(company => company.updateContact(contactIndex, contact)), // Update contact using entity method
-      map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
-      map(updatedCompany => {
-        // Update local state
-        this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? updatedCompany : c)));
-        return updatedCompany;
+      switchMap(company => {
+        const updatedCompany = company.updateContact(contactIndex, contact);
+        return this.repository.update(updatedCompany).pipe(
+          map(savedCompany => {
+            // Update local state
+            this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? savedCompany : c)));
+            return savedCompany;
+          })
+        );
       }),
       finalize(() => this.loadingSignal.set(false)),
       catchError(error => {
@@ -215,12 +224,15 @@ export class CompanyService {
 
     // Fetch the company, remove contact, and save
     return this.repository.getById(companyId).pipe(
-      map(company => company.removeContact(contactIndex)), // Remove contact using entity method
-      map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
-      map(updatedCompany => {
-        // Update local state
-        this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? updatedCompany : c)));
-        return updatedCompany;
+      switchMap(company => {
+        const updatedCompany = company.removeContact(contactIndex);
+        return this.repository.update(updatedCompany).pipe(
+          map(savedCompany => {
+            // Update local state
+            this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? savedCompany : c)));
+            return savedCompany;
+          })
+        );
       }),
       finalize(() => this.loadingSignal.set(false)),
       catchError(error => {

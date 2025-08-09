@@ -200,9 +200,14 @@ export class EnhancedLoginComponent {
       } else {
         this.error = result.msg;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
-      this.error = error.message || 'Login failed';
+      // Type guard for error object to safely access message property
+      if (error instanceof Error) {
+        this.error = error.message || 'Login failed';
+      } else {
+        this.error = 'An unknown error occurred during login.';
+      }
     } finally {
       this.loading = false;
       this.cdr.detectChanges();
@@ -225,9 +230,14 @@ export class EnhancedLoginComponent {
       } else {
         this.error = result.msg;
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Google login error:', error);
-      this.error = error.message || 'Google login failed';
+      // Type guard for error object to safely access message property
+      if (error instanceof Error) {
+        this.error = error.message || 'Google login failed';
+      } else {
+        this.error = 'An unknown error occurred during Google login.';
+      }
     } finally {
       this.googleLoading = false;
       this.cdr.detectChanges();

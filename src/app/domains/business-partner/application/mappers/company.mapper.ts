@@ -16,13 +16,13 @@ export class CompanyMapper {
    */
   toResponseDto(company: Company): CompanyResponseDto {
     return {
-      id: company.companyId.value,
+      id: company.id,
       companyName: company.companyName,
       businessRegistrationNumber: company.businessRegistrationNumber,
       address: company.address,
       businessPhone: company.businessPhone,
-      status: company.status.value,
-      riskLevel: company.riskLevel.value,
+      status: company.status,
+      riskLevel: company.riskLevel,
       fax: company.fax,
       website: company.website,
       contacts: company.contacts.map(contact => ({
@@ -32,7 +32,6 @@ export class CompanyMapper {
         phone: contact.phone,
         isPrimary: contact.isPrimary
       })),
-      dynamicWorkflow: company.dynamicWorkflow?.toPlainObject(),
       createdAt: company.createdAt.toISOString(),
       updatedAt: company.updatedAt.toISOString()
     };

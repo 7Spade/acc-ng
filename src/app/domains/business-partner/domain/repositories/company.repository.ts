@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken } from '@angular/core';
+import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Company } from '../entities/company.entity';
