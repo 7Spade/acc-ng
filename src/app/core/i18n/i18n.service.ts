@@ -74,7 +74,8 @@ export class I18NService extends AlainI18nBaseService {
     super();
 
     const defaultLang = this.getDefaultLang();
-    this._defaultLang = this._langs.findIndex(w => w.code === defaultLang) === -1 ? DEFAULT : defaultLang;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+    return defaultLang.abbr === item.abbr ? item.lang : defaultLang.lang;
   }
 
   private getDefaultLang(): string {

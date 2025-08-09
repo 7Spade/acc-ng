@@ -27,12 +27,16 @@ for (let i = 0; i < total; i += 1) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function genData(params: any): { total: number; list: any[] } {
-  let ret = [...list];
-  const pi = +params.pi;
-  const ps = +params.ps;
-  const start = (pi - 1) * ps;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  let ret: any[] = [...list];
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const pi = +params.pi || 1;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const ps = +params.ps || 10;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (params.no) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-member-access
     ret = ret.filter(data => data.no.indexOf(params.no) > -1);
   }
 
@@ -104,16 +108,22 @@ export const USERS = {
   },
   'POST /user/avatar': 'ok',
   'POST /login/account': (req: MockRequest) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data = req.body;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (!(data.userName === 'admin' || data.userName === 'user') || data.password !== '123456') {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return { msg: `Invalid username or password（admin/123456）` };
     }
     return {
       msg: 'ok',
       user: {
         token: '123456789',
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         name: data.userName,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         email: `${data.userName}@qq.com`,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         id: 10000,
         time: +new Date()
       }

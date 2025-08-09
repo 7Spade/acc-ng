@@ -84,7 +84,12 @@ function buildAuthRefresh(injector: Injector): void {
     .subscribe({
       next: res => {
         // TODO: Mock expired value
-        res.expired = +new Date() + 1000 * 60 * 5;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data = (req as NzSafeAny).body || (req as NzSafeAny);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            if (+new Date() >= data.expired) {
+          res.expired = +new Date() + 1000 * 60 * 5;
+        }
         refreshToking = false;
         tokenSrv.set(res);
       },

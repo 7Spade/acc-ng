@@ -26,20 +26,27 @@ for (let i = 0; i < 46; i += 1) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getRule(params: any): any[] {
-  let ret = [...list];
-  if (params.sorter) {
-    const s = params.sorter.split('_');
-    ret = ret.sort((prev, next) => {
-      if (s[1] === 'descend') {
-        return next[s[0]] - prev[s[0]];
-      }
-      return prev[s[0]] - next[s[0]];
-    });
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  let ret: any[] = [...list];
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const sorter = params.sorter;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+  const s = (sorter || '').split('_');
+  if (s.length !== 2) return ret;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const [sortField, sortDir] = s;
+  ret = ret.sort((prev: any, next: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-member-access
+    return sortDir === 'desc' ? next[sortField] - prev[sortField] : prev[sortField] - next[sortField];
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (params.statusList && params.statusList.length > 0) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-member-access
     ret = ret.filter(data => params.statusList.indexOf(data.status) > -1);
   }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (params.no) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-member-access
     ret = ret.filter(data => data.no.indexOf(params.no) > -1);
   }
   return ret;

@@ -54,7 +54,8 @@ function handleData(injector: Injector, ev: HttpResponseBase, req: HttpRequest<a
       break;
   }
   if (ev instanceof HttpErrorResponse) {
-    return throwError(() => ev);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return throwError(() => ev);
   } else if ((ev as unknown as ReThrowHttpError)._throw === true) {
     return throwError(() => (ev as unknown as ReThrowHttpError).body);
   } else {

@@ -71,6 +71,7 @@ export const GEOS = {
   '/geo/province': () => DATA.filter(w => w.id.endsWith('0000')),
   '/geo/:id': (req: MockRequest) => {
     const pid = (req.params.id || '310000').slice(0, 2);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return DATA.filter(w => w.id.slice(0, 2) === pid && !w.id.endsWith('0000'));
   }
 };
