@@ -39,7 +39,7 @@ export class CompanyMapper {
   /**
    * 將 CompanyResponseDto 轉換為表單值
    */
-  toFormGroup(company: CompanyResponseDto): Record<string, any> {
+  toFormGroup(company: CompanyResponseDto): Record<string, string | CompanyStatusEnum | RiskLevelEnum> {
     return {
       companyName: company.companyName,
       businessRegistrationNumber: company.businessRegistrationNumber,

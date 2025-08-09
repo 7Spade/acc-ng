@@ -17,8 +17,9 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 
 import { WorkflowDesignerComponent } from './workflow-designer.component';
-import { ContactDto, CompanyResponseDto } from '../../application/dto/company.dto';
+import { ContactDto } from '../../application/dto/company.dto';
 import { CompanyMapper } from '../../application/mappers/company.mapper';
+import { Company } from '../../domain/entities/company.entity';
 import { CompanyService } from '../../application/services/company.service';
 import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
 import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
@@ -463,7 +464,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   // 模態框操作
-  openModal(mode: 'create' | 'edit', company?: any): void {
+  openModal(mode: 'create' | 'edit', company?: Company): void {
     this.modalMode = mode;
     this.modalVisible = true;
 
@@ -608,7 +609,7 @@ export class CompanyListComponent implements OnInit {
     this.workflowCompanyId.set('');
   }
 
-  private markFormTouched(form: any = this.form): void {
+  private markFormTouched(form = this.form): void {
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);
       control?.markAsTouched();
