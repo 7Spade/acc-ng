@@ -1,4 +1,3 @@
-
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -38,13 +37,7 @@ export interface PaymentWorkflowTransition {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <nz-modal 
-      [(nzVisible)]="visible" 
-      nzTitle="請款工作流程狀態" 
-      nzWidth="700px" 
-      [nzFooter]="null" 
-      (nzOnCancel)="close()"
-    >
+    <nz-modal [(nzVisible)]="visible" nzTitle="請款工作流程狀態" nzWidth="700px" [nzFooter]="null" (nzOnCancel)="close()">
       <ng-container *nzModalContent>
         <div class="workflow-container">
           <!-- 當前狀態 -->
@@ -93,12 +86,8 @@ export interface PaymentWorkflowTransition {
 
                 <nz-form-item>
                   <nz-form-control>
-                    <button nz-button nzType="primary" [nzLoading]="isSubmitting()" (click)="executeTransition()">
-                      執行狀態轉換
-                    </button>
-                    <button nz-button nzType="default" class="ml-2" (click)="cancelTransition()">
-                      取消
-                    </button>
+                    <button nz-button nzType="primary" [nzLoading]="isSubmitting()" (click)="executeTransition()"> 執行狀態轉換 </button>
+                    <button nz-button nzType="default" class="ml-2" (click)="cancelTransition()"> 取消 </button>
                   </nz-form-control>
                 </nz-form-item>
               </form>
@@ -119,10 +108,7 @@ export interface PaymentWorkflowTransition {
           <div class="history-section">
             <h4>狀態歷史</h4>
             <nz-timeline>
-              <nz-timeline-item
-                *ngFor="let history of stateHistory()"
-                [nzColor]="getStateColor(history.state)"
-              >
+              <nz-timeline-item *ngFor="let history of stateHistory()" [nzColor]="getStateColor(history.state)">
                 <div class="history-item">
                   <div class="history-header">
                     <nz-tag [nzColor]="getStateColor(history.state)">
@@ -270,29 +256,19 @@ export class PaymentWorkflowComponent {
   };
 
   // Computed properties
-  readonly currentStateName = computed(() => 
-    this.workflowState?.getStateDisplayName() || 'Unknown'
+  readonly currentStateName = computed(() => this.workflowState?.getStateDisplayName() || 'Unknown');
+
+  readonly currentStateColor = computed(() => this.workflowState?.getStateColor() || 'default');
+
+  readonly currentStateIcon = computed(
+    () => this.stateIcons[this.workflowState?.currentState || PaymentWorkflowStateEnum.Draft] || 'question'
   );
 
-  readonly currentStateColor = computed(() => 
-    this.workflowState?.getStateColor() || 'default'
-  );
+  readonly isFinalState = computed(() => this.workflowState?.isFinalState() || false);
 
-  readonly currentStateIcon = computed(() => 
-    this.stateIcons[this.workflowState?.currentState || PaymentWorkflowStateEnum.Draft] || 'question'
-  );
+  readonly availableTransitions = computed(() => this.workflowState?.availableTransitions || []);
 
-  readonly isFinalState = computed(() => 
-    this.workflowState?.isFinalState() || false
-  );
-
-  readonly availableTransitions = computed(() => 
-    this.workflowState?.availableTransitions || []
-  );
-
-  readonly stateHistory = computed(() => 
-    this.workflowState?.stateHistory || []
-  );
+  readonly stateHistory = computed(() => this.workflowState?.stateHistory || []);
 
   selectTransition(transition: PaymentWorkflowStateEnum): void {
     this.selectedTransition.set(transition);

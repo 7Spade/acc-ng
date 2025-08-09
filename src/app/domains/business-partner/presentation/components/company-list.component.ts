@@ -73,11 +73,7 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
       </div>
 
       <!-- 空狀態 -->
-      <nz-empty
-        *ngIf="!isLoading() && !hasCompanies()"
-        nzNotFoundImage="simple"
-        nzNotFoundContent="尚無合作夥伴資料"
-      >
+      <nz-empty *ngIf="!isLoading() && !hasCompanies()" nzNotFoundImage="simple" nzNotFoundContent="尚無合作夥伴資料">
         <div nz-empty-footer>
           <button nz-button nzType="primary" (click)="openModal('create')"> 立即新增 </button>
         </div>
@@ -112,8 +108,12 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
               <td>{{ company.businessRegistrationNumber }}</td>
               <td>{{ company.address }}</td>
               <td>{{ company.businessPhone }}</td>
-              <td><nz-tag>{{ company.status }}</nz-tag></td>
-              <td><nz-tag>{{ company.riskLevel }}</nz-tag></td>
+              <td
+                ><nz-tag>{{ company.status }}</nz-tag></td
+              >
+              <td
+                ><nz-tag>{{ company.riskLevel }}</nz-tag></td
+              >
               <td>{{ company.contacts.length }}</td>
               <td>
                 <button nz-button nzType="link" nzSize="small" (click)="openWorkflowDesigner(company.id)">
@@ -162,11 +162,15 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
                             <td>{{ contact.title }}</td>
                             <td>{{ contact.email }}</td>
                             <td>{{ contact.phone }}</td>
-                            <td><nz-tag>{{ contact.isPrimary ? '是' : '否' }}</nz-tag></td>
+                            <td
+                              ><nz-tag>{{ contact.isPrimary ? '是' : '否' }}</nz-tag></td
+                            >
                             <td>
                               <a (click)="editContact(company.id, $index, contact)">編輯</a>
                               <nz-divider nzType="vertical"></nz-divider>
-                              <a nz-popconfirm nzPopconfirmTitle="是否要刪除此聯絡人？" (nzOnConfirm)="deleteContact(company.id, $index)">刪除</a>
+                              <a nz-popconfirm nzPopconfirmTitle="是否要刪除此聯絡人？" (nzOnConfirm)="deleteContact(company.id, $index)"
+                                >刪除</a
+                              >
                             </td>
                           </tr>
                         }
@@ -443,19 +447,13 @@ export class CompanyListComponent implements OnInit {
     if (!query) return companies;
 
     return companies.filter(
-      company => 
-        company.companyName.toLowerCase().includes(query) || 
-        company.businessRegistrationNumber.includes(query)
+      company => company.companyName.toLowerCase().includes(query) || company.businessRegistrationNumber.includes(query)
     );
   });
 
-  readonly modalTitle = computed(() => 
-    this.modalMode === 'create' ? '新增合作夥伴' : '編輯合作夥伴'
-  );
+  readonly modalTitle = computed(() => (this.modalMode === 'create' ? '新增合作夥伴' : '編輯合作夥伴'));
 
-  readonly contactModalTitle = computed(() => 
-    this.contactMode === 'add' ? '新增聯絡人' : '編輯聯絡人'
-  );
+  readonly contactModalTitle = computed(() => (this.contactMode === 'add' ? '新增聯絡人' : '編輯聯絡人'));
 
   ngOnInit() {
     this.companyService.loadCompanies();
@@ -492,9 +490,10 @@ export class CompanyListComponent implements OnInit {
     this.isSubmitting.set(true);
     const formValue = this.form.value;
 
-    const operation = this.modalMode === 'create'
-      ? this.companyService.createCompany(formValue as CreateCompanyDto)
-      : this.companyService.updateCompany(this.editingCompanyId!, formValue as UpdateCompanyDto);
+    const operation =
+      this.modalMode === 'create'
+        ? this.companyService.createCompany(formValue as CreateCompanyDto)
+        : this.companyService.updateCompany(this.editingCompanyId!, formValue as UpdateCompanyDto);
 
     operation.subscribe({
       next: () => {
@@ -542,9 +541,10 @@ export class CompanyListComponent implements OnInit {
     this.isSubmitting.set(true);
     const contact = this.contactForm.value as ContactDto;
 
-    const operation = this.contactMode === 'add'
-      ? this.companyService.addContact(this.editingContactCompanyId!, contact)
-      : this.companyService.updateContact(this.editingContactCompanyId!, this.editingContactIndex, contact);
+    const operation =
+      this.contactMode === 'add'
+        ? this.companyService.addContact(this.editingContactCompanyId!, contact)
+        : this.companyService.updateContact(this.editingContactCompanyId!, this.editingContactIndex, contact);
 
     operation.subscribe({
       next: () => {

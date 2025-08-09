@@ -30,8 +30,8 @@ export class Company {
     public businessPhone: string,
     public status: CompanyStatusEnum = CompanyStatusEnum.Active,
     public riskLevel: RiskLevelEnum = RiskLevelEnum.Low,
-    public fax: string = '',
-    public website: string = '',
+    public fax = '',
+    public website = '',
     public contacts: Contact[] = [],
     public createdAt: Date = new Date(),
     public updatedAt: Date = new Date()
@@ -77,14 +77,23 @@ export class Company {
   addContact(contact: Contact): Company {
     const contacts = [...this.contacts];
     if (contact.isPrimary) {
-      contacts.forEach(c => c.isPrimary = false);
+      contacts.forEach(c => (c.isPrimary = false));
     }
     contacts.push(contact);
 
     return new Company(
-      this.id, this.companyName, this.businessRegistrationNumber,
-      this.address, this.businessPhone, this.status, this.riskLevel,
-      this.fax, this.website, contacts, this.createdAt, new Date()
+      this.id,
+      this.companyName,
+      this.businessRegistrationNumber,
+      this.address,
+      this.businessPhone,
+      this.status,
+      this.riskLevel,
+      this.fax,
+      this.website,
+      contacts,
+      this.createdAt,
+      new Date()
     );
   }
 

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, from, map } from 'rxjs';
 import { Firestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, query, where } from '@angular/fire/firestore';
+import { Observable, from, map } from 'rxjs';
+
 import { Company } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../domain/repositories/company.repository';
 
@@ -13,9 +14,7 @@ export class CompanyFirebaseRepository implements CompanyRepository {
 
   getAll(): Observable<Company[]> {
     const companiesRef = collection(this.firestore, this.collectionName);
-    return from(getDocs(companiesRef)).pipe(
-      map(snapshot => snapshot.docs.map(doc => this.mapDocToCompany(doc)))
-    );
+    return from(getDocs(companiesRef)).pipe(map(snapshot => snapshot.docs.map(doc => this.mapDocToCompany(doc))));
   }
 
   getById(id: string): Observable<Company> {
@@ -33,9 +32,7 @@ export class CompanyFirebaseRepository implements CompanyRepository {
     const data = company.toPlainObject();
     delete data.id; // Let Firestore generate the ID
 
-    return from(addDoc(companiesRef, data)).pipe(
-      map(docRef => new Company(docRef.id, ...Object.values(data)))
-    );
+    return from(addDoc(companiesRef, data)).pipe(map(docRef => new Company(docRef.id, ...Object.values(data))));
   }
 
   update(company: Company): Observable<Company> {
@@ -43,9 +40,7 @@ export class CompanyFirebaseRepository implements CompanyRepository {
     const data = company.toPlainObject();
     delete data.id;
 
-    return from(updateDoc(docRef, data)).pipe(
-      map(() => company)
-    );
+    return from(updateDoc(docRef, data)).pipe(map(() => company));
   }
 
   delete(id: string): Observable<void> {
@@ -57,10 +52,11 @@ export class CompanyFirebaseRepository implements CompanyRepository {
     // For simplicity, get all and filter client-side
     // In production, consider Firestore text search or Algolia
     return this.getAll().pipe(
-      map(companies => companies.filter(company =>
-        company.companyName.toLowerCase().includes(query.toLowerCase()) ||
-        company.businessRegistrationNumber.includes(query)
-      ))
+      map(companies =>
+        companies.filter(
+          company => company.companyName.toLowerCase().includes(query.toLowerCase()) || company.businessRegistrationNumber.includes(query)
+        )
+      )
     );
   }
 

@@ -1,5 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, map, catchError, finalize, of } from 'rxjs';
+
 import { Company, CreateCompanyProps, Contact } from '../../domain/entities/company.entity';
 import { COMPANY_REPOSITORY } from '../../domain/repositories/company.repository';
 
@@ -41,16 +42,19 @@ export class CompanyService {
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
-    this.repository.getAll().pipe(
-      finalize(() => this.loadingSignal.set(false)),
-      catchError(error => {
-        console.error('載入公司列表失敗:', error);
-        this.errorSignal.set('載入公司列表失敗');
-        return of([]);
-      })
-    ).subscribe(companies => {
-      this.companiesSignal.set(companies);
-    });
+    this.repository
+      .getAll()
+      .pipe(
+        finalize(() => this.loadingSignal.set(false)),
+        catchError(error => {
+          console.error('載入公司列表失敗:', error);
+          this.errorSignal.set('載入公司列表失敗');
+          return of([]);
+        })
+      )
+      .subscribe(companies => {
+        this.companiesSignal.set(companies);
+      });
   }
 
   /**
@@ -119,9 +123,7 @@ export class CompanyService {
       map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
       map(updatedCompany => {
         // Update local state
-        this.companiesSignal.update(companies =>
-          companies.map(c => c.id === id ? updatedCompany : c)
-        );
+        this.companiesSignal.update(companies => companies.map(c => (c.id === id ? updatedCompany : c)));
         return updatedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),
@@ -143,9 +145,7 @@ export class CompanyService {
     return this.repository.delete(id).pipe(
       map(() => {
         // Update local state
-        this.companiesSignal.update(companies =>
-          companies.filter(c => c.id !== id)
-        );
+        this.companiesSignal.update(companies => companies.filter(c => c.id !== id));
       }),
       finalize(() => this.loadingSignal.set(false)),
       catchError(error => {
@@ -169,9 +169,7 @@ export class CompanyService {
       map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
       map(updatedCompany => {
         // Update local state
-        this.companiesSignal.update(companies =>
-          companies.map(c => c.id === companyId ? updatedCompany : c)
-        );
+        this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? updatedCompany : c)));
         return updatedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),
@@ -196,9 +194,7 @@ export class CompanyService {
       map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
       map(updatedCompany => {
         // Update local state
-        this.companiesSignal.update(companies =>
-          companies.map(c => c.id === companyId ? updatedCompany : c)
-        );
+        this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? updatedCompany : c)));
         return updatedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),
@@ -223,9 +219,7 @@ export class CompanyService {
       map(updatedCompany => this.repository.update(updatedCompany)), // Save the updated company
       map(updatedCompany => {
         // Update local state
-        this.companiesSignal.update(companies =>
-          companies.map(c => c.id === companyId ? updatedCompany : c)
-        );
+        this.companiesSignal.update(companies => companies.map(c => (c.id === companyId ? updatedCompany : c)));
         return updatedCompany;
       }),
       finalize(() => this.loadingSignal.set(false)),

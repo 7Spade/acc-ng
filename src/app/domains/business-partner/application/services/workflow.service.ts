@@ -47,12 +47,10 @@ export class WorkflowService {
     try {
       const companies = this.companyService.companies();
       const company = companies.find(c => c.id === companyId);
-      
+
       const workflowData = company && (company as any).dynamicWorkflow;
-      const workflow = workflowData 
-        ? DynamicWorkflowStateVO.fromPlainObject(workflowData)
-        : DynamicWorkflowStateVO.create();
-        
+      const workflow = workflowData ? DynamicWorkflowStateVO.fromPlainObject(workflowData) : DynamicWorkflowStateVO.create();
+
       this.currentWorkflowSignal.set(workflow);
     } catch (error) {
       console.warn('載入工作流程失敗，使用預設工作流程:', error);

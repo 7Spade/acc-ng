@@ -1,4 +1,3 @@
-
 import { CommonModule } from '@angular/common';
 import { Component, ChangeDetectionStrategy, signal, computed, inject, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -57,47 +56,24 @@ import { DynamicWorkflowState, DynamicStateTransition } from '../../domain/value
               <nz-form-item>
                 <nz-form-label>狀態說明</nz-form-label>
                 <nz-form-control>
-                  <textarea
-                    nz-input
-                    [(ngModel)]="stateForm.description"
-                    rows="2"
-                    placeholder="說明此狀態的用途..."
-                  ></textarea>
+                  <textarea nz-input [(ngModel)]="stateForm.description" rows="2" placeholder="說明此狀態的用途..."></textarea>
                 </nz-form-control>
               </nz-form-item>
 
               <nz-form-item>
                 <nz-form-control>
-                  <button 
-                    *ngIf="editingState(); else addButton" 
-                    nz-button 
-                    nzType="primary" 
-                    (click)="updateState()"
-                  >
+                  <button *ngIf="editingState(); else addButton" nz-button nzType="primary" (click)="updateState()">
                     <span nz-icon nzType="save"></span>
                     更新
                   </button>
                   <ng-template #addButton>
-                    <button 
-                      nz-button 
-                      nzType="primary" 
-                      (click)="addState()" 
-                      [disabled]="!stateForm.name.trim()"
-                    >
+                    <button nz-button nzType="primary" (click)="addState()" [disabled]="!stateForm.name.trim()">
                       <span nz-icon nzType="plus"></span>
                       新增狀態
                     </button>
                   </ng-template>
-                  
-                  <button 
-                    *ngIf="editingState()" 
-                    nz-button 
-                    nzType="default" 
-                    (click)="cancelEdit()" 
-                    class="ml-2"
-                  >
-                    取消
-                  </button>
+
+                  <button *ngIf="editingState()" nz-button nzType="default" (click)="cancelEdit()" class="ml-2"> 取消 </button>
                 </nz-form-control>
               </nz-form-item>
             </form>
@@ -196,13 +172,7 @@ import { DynamicWorkflowState, DynamicStateTransition } from '../../domain/value
 
               <nz-form-item>
                 <nz-form-control>
-                  <button
-                    nz-button
-                    nzType="primary"
-                    nzBlock
-                    (click)="addTransition()"
-                    [disabled]="!canAddTransition()"
-                  >
+                  <button nz-button nzType="primary" nzBlock (click)="addTransition()" [disabled]="!canAddTransition()">
                     <span nz-icon nzType="arrow-right"></span>
                     新增轉換
                   </button>
@@ -570,9 +540,7 @@ export class WorkflowDesignerComponent implements OnInit, OnDestroy {
   });
 
   readonly canAddTransition = computed(() => {
-    return this.transitionForm.from && 
-           this.transitionForm.to && 
-           this.transitionForm.condition.trim();
+    return this.transitionForm.from && this.transitionForm.to && this.transitionForm.condition.trim();
   });
 
   ngOnInit(): void {
