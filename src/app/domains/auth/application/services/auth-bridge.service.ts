@@ -16,6 +16,16 @@ import { Email } from '../../domain/value-objects/email.vo';
 import { UserProfile } from '../../domain/value-objects/user-profile.vo';
 
 /**
+ * Token 模型介面
+ */
+interface ITokenModel {
+  msg: string;
+  user: {
+    [key: string]: string | number | boolean;
+  };
+}
+
+/**
  * 認證橋接服務
  * 整合 Firebase Auth 與 @delon/auth
  */
@@ -29,8 +39,7 @@ export class AuthBridgeService {
   /**
    * 使用郵箱密碼登入
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  signInWithEmailPassword(email: string, password: string): Observable<any> {
+  signInWithEmailPassword(email: string, password: string): Observable<ITokenModel> {
     // 檢查是否為管理員帳號
     if (email === 'admin@company.com' && password === '123456') {
       return this.handleAdminLogin();
@@ -135,8 +144,7 @@ export class AuthBridgeService {
   /**
    * 處理管理員登入
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private handleAdminLogin(): Observable<any> {
+  private handleAdminLogin(): Observable<ITokenModel> {
     const email = Email.create('admin@company.com');
     const profile = UserProfile.create('Admin', 'User');
     const adminUser = User.createAdmin(email, profile);
@@ -147,8 +155,7 @@ export class AuthBridgeService {
   /**
    * 設置 @delon/auth token
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private setDelonAuthToken(user: User): any {
+  private setDelonAuthToken(user: User): ITokenModel {
     const delonUser = user.toDelonAuthUser();
     this.delonTokenService.set(delonUser);
 
