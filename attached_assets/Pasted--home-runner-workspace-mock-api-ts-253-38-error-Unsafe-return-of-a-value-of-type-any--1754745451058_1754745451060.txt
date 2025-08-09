@@ -1,0 +1,103 @@
+/home/runner/workspace/_mock/_api.ts
+  253:38  error  Unsafe return of a value of type `any[]`       @typescript-eslint/no-unsafe-return
+  253:66  error  Unsafe member access .count on an `any` value  @typescript-eslint/no-unsafe-member-access
+  254:24  error  Unsafe return of a value of type `any[]`       @typescript-eslint/no-unsafe-return
+  255:28  error  Unsafe return of a value of type `any[]`       @typescript-eslint/no-unsafe-return
+
+/home/runner/workspace/_mock/_chart.ts
+  185:9   error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  185:20  error  Unsafe member access .name on an `any` value  @typescript-eslint/no-unsafe-member-access
+  186:9   error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  186:30  error  Unsafe member access [key] on an `any` value  @typescript-eslint/no-unsafe-member-access
+  187:9   error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  187:21  error  Unsafe member access [key] on an `any` value  @typescript-eslint/no-unsafe-member-access
+  196:3   error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  210:3   error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  211:3   error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+
+/home/runner/workspace/_mock/_geo.ts
+  73:11  error  Unsafe assignment of an `any` value            @typescript-eslint/no-unsafe-assignment
+  73:17  error  Unsafe call of a(n) `any` typed value          @typescript-eslint/no-unsafe-call
+  73:29  error  Unsafe member access .id on an `any` value     @typescript-eslint/no-unsafe-member-access
+  73:45  error  Unsafe member access .slice on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+/home/runner/workspace/_mock/_rule.ts
+  29:14  error  Unsafe spread of an `any` value in an array          @typescript-eslint/no-unsafe-assignment
+  30:14  error  Unsafe member access .sorter on an `any` value       @typescript-eslint/no-unsafe-member-access
+  31:11  error  Unsafe assignment of an `any` value                  @typescript-eslint/no-unsafe-assignment
+  31:15  error  Unsafe call of a(n) `any` typed value                @typescript-eslint/no-unsafe-call
+  31:22  error  Unsafe member access .sorter on an `any` value       @typescript-eslint/no-unsafe-member-access
+  33:13  error  Unsafe member access [1] on an `any` value           @typescript-eslint/no-unsafe-member-access
+  34:21  error  Unsafe member access [s[0]] on an `any` value        @typescript-eslint/no-unsafe-member-access
+  34:21  error  Computed name [s[0]] resolves to an `any` value      @typescript-eslint/no-unsafe-member-access
+  34:23  error  Unsafe member access [0] on an `any` value           @typescript-eslint/no-unsafe-member-access
+  34:34  error  Unsafe member access [s[0]] on an `any` value        @typescript-eslint/no-unsafe-member-access
+  34:34  error  Computed name [s[0]] resolves to an `any` value      @typescript-eslint/no-unsafe-member-access
+  34:36  error  Unsafe member access [0] on an `any` value           @typescript-eslint/no-unsafe-member-access
+  36:19  error  Unsafe member access [s[0]] on an `any` value        @typescript-eslint/no-unsafe-member-access
+  36:19  error  Computed name [s[0]] resolves to an `any` value      @typescript-eslint/no-unsafe-member-access
+  36:21  error  Unsafe member access [0] on an `any` value           @typescript-eslint/no-unsafe-member-access
+  36:32  error  Unsafe member access [s[0]] on an `any` value        @typescript-eslint/no-unsafe-member-access
+  36:32  error  Computed name [s[0]] resolves to an `any` value      @typescript-eslint/no-unsafe-member-access
+  36:34  error  Unsafe member access [0] on an `any` value           @typescript-eslint/no-unsafe-member-access
+  39:14  error  Unsafe member access .statusList on an `any` value   @typescript-eslint/no-unsafe-member-access
+  39:35  error  Unsafe member access .statusList on an `any` value   @typescript-eslint/no-unsafe-member-access
+  40:30  error  Unsafe call of a(n) `any` typed value                @typescript-eslint/no-unsafe-call
+  40:37  error  Unsafe member access .statusList on an `any` value   @typescript-eslint/no-unsafe-member-access
+  40:61  error  Unsafe member access .status on an `any` value       @typescript-eslint/no-unsafe-member-access
+  42:14  error  Unsafe member access .no on an `any` value           @typescript-eslint/no-unsafe-member-access
+  43:30  error  Unsafe call of a(n) `any` typed value                @typescript-eslint/no-unsafe-call
+  43:35  error  Unsafe member access .no on an `any` value           @typescript-eslint/no-unsafe-member-access
+  43:53  error  Unsafe member access .no on an `any` value           @typescript-eslint/no-unsafe-member-access
+  50:39  error  Unsafe member access .no on an `any` value           @typescript-eslint/no-unsafe-member-access
+  80:34  error  Unsafe return of a value of type `any[]`             @typescript-eslint/no-unsafe-return
+  81:68  error  Unsafe member access .nos on an `any` value          @typescript-eslint/no-unsafe-member-access
+  82:57  error  Unsafe member access .description on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+/home/runner/workspace/_mock/_user.ts
+   30:14  error  Unsafe spread of an `any` value in an array       @typescript-eslint/no-unsafe-assignment
+   31:22  error  Unsafe member access .pi on an `any` value        @typescript-eslint/no-unsafe-member-access
+   32:22  error  Unsafe member access .ps on an `any` value        @typescript-eslint/no-unsafe-member-access
+   35:14  error  Unsafe member access .no on an `any` value        @typescript-eslint/no-unsafe-member-access
+   36:30  error  Unsafe call of a(n) `any` typed value             @typescript-eslint/no-unsafe-call
+   36:35  error  Unsafe member access .no on an `any` value        @typescript-eslint/no-unsafe-member-access
+   36:53  error  Unsafe member access .no on an `any` value        @typescript-eslint/no-unsafe-member-access
+   44:9   error  Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+   44:33  error  Unsafe member access .id on an `any` value        @typescript-eslint/no-unsafe-member-access
+   54:38  error  Unsafe return of a value of type `any`            @typescript-eslint/no-unsafe-return
+   54:55  error  Unsafe member access .id on an `any` value        @typescript-eslint/no-unsafe-member-access
+   54:74  error  Unsafe member access .id on an `any` value        @typescript-eslint/no-unsafe-member-access
+   55:64  error  Unsafe member access .id on an `any` value        @typescript-eslint/no-unsafe-member-access
+  107:11  error  Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+  108:16  error  Unsafe member access .userName on an `any` value  @typescript-eslint/no-unsafe-member-access
+  108:45  error  Unsafe member access .userName on an `any` value  @typescript-eslint/no-unsafe-member-access
+  108:74  error  Unsafe member access .password on an `any` value  @typescript-eslint/no-unsafe-member-access
+  115:9   error  Unsafe assignment of an `any` value               @typescript-eslint/no-unsafe-assignment
+  115:20  error  Unsafe member access .userName on an `any` value  @typescript-eslint/no-unsafe-member-access
+  116:24  error  Unsafe member access .userName on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+/home/runner/workspace/src/app/core/i18n/i18n.service.spec.ts
+  30:37  error  Unsafe assignment of an `any` value             @typescript-eslint/no-unsafe-assignment
+  50:25  error  Unsafe member access .layout on an `any` value  @typescript-eslint/no-unsafe-member-access
+  55:25  error  Unsafe member access .layout on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+/home/runner/workspace/src/app/core/i18n/i18n.service.ts
+  84:30  error  Unsafe member access .lang on an `any` value  @typescript-eslint/no-unsafe-member-access
+  85:7   error  Unsafe return of a value of type `any`        @typescript-eslint/no-unsafe-return
+  85:35  error  Unsafe member access .lang on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+/home/runner/workspace/src/app/core/net/default.interceptor.ts
+  59:29  error  Unsafe return of a value of type `any`                                                                   @typescript-eslint/no-unsafe-return
+  75:3   error  Unsafe return of type `Observable<any>` from function with return type `Observable<HttpEvent<unknown>>`  @typescript-eslint/no-unsafe-return
+
+/home/runner/workspace/src/app/core/net/refresh-token.ts
+  30:74  error  Unsafe assignment of an `any` value              @typescript-eslint/no-unsafe-assignment
+  68:31  error  Unsafe return of a value of type `any`           @typescript-eslint/no-unsafe-return
+  87:13  error  Unsafe member access .expired on an `any` value  @typescript-eslint/no-unsafe-member-access
+
+/home/runner/workspace/src/app/core/startup/startup.service.ts
+  54:44  error  Unsafe member access .app on an `any` value   @typescript-eslint/no-unsafe-member-access
+  56:45  error  Unsafe member access .user on an `any` value  @typescript-eslint/no-unsafe-member-access
+  60:38  error  Unsafe member access .menu on an `any` value  @typescript-eslint/no-unsafe-member-access
+  63:9   error  Unsafe assignment of an `any` value           @typescript-eslint/no-unsafe-assignment
+  63:44  error  Unsafe member access .app on an `any` value   @typescript-eslint/no-unsafe-member-access
