@@ -1,18 +1,16 @@
+
 import { Injectable } from '@angular/core';
-
 import { Company } from '../../domain/entities/company.entity';
-import { CompanyResponseDto } from '../dto/company.dto';
+import { CompanyResponseDto, CreateCompanyDto, UpdateCompanyDto, ContactDto } from '../dto/company.dto';
+import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
+import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
 
-/**
- * 公司映射器
- * 極簡設計，統一處理 Entity 到 DTO 的轉換
- */
 @Injectable({
   providedIn: 'root'
 })
 export class CompanyMapper {
   /**
-   * 將 Company Entity 轉換為 CompanyResponseDto
+   * 將 Company 實體轉換為 CompanyResponseDto
    */
   toResponseDto(company: Company): CompanyResponseDto {
     return {
@@ -25,22 +23,57 @@ export class CompanyMapper {
       riskLevel: company.riskLevel as RiskLevelEnum,
       fax: company.fax,
       website: company.website,
-      contacts: company.contacts.map(contact => ({
-        name: contact.name,
-        title: contact.title,
-        email: contact.email,
-        phone: contact.phone,
-        isPrimary: contact.isPrimary
-      })),
-      createdAt: company.createdAt.toISOString(),
-      updatedAt: company.updatedAt.toISOString()
+      contacts: company.contacts,
+      createdAt: company.createdAt,
+      updatedAt: company.updatedAt
     };
   }
 
   /**
-   * 批量轉換
+   * 將 Company 實體轉換為表單資料
    */
-  toResponseDtoList(companies: Company[]): CompanyResponseDto[] {
-    return companies.map(company => this.toResponseDto(company));
+  toFormGroup(company: CompanyResponseDto) {
+    return {
+      companyName: company.companyName,
+      businessRegistrationNumber: company.businessRegistrationNumber,
+      address: company.address,
+      businessPhone: company.businessPhone,
+      status: company.status,
+      riskLevel: company.riskLevel,
+      fax: company.fax || '',
+      website: company.website || ''
+    };
+  }
+
+  /**
+   * 將表單資料轉換為 CreateCompanyDto
+   */
+  toCreateCompanyDto(formValue: any): CreateCompanyDto {
+    return {
+      companyName: formValue.companyName,
+      businessRegistrationNumber: formValue.businessRegistrationNumber,
+      address: formValue.address,
+      businessPhone: formValue.businessPhone,
+      status: formValue.status,
+      riskLevel: formValue.riskLevel,
+      fax: formValue.fax || '',
+      website: formValue.website || ''
+    };
+  }
+
+  /**
+   * 將表單資料轉換為 UpdateCompanyDto
+   */
+  toUpdateCompanyDto(formValue: any): UpdateCompanyDto {
+    return {
+      companyName: formValue.companyName,
+      businessRegistrationNumber: formValue.businessRegistrationNumber,
+      address: formValue.address,
+      businessPhone: formValue.businessPhone,
+      status: formValue.status,
+      riskLevel: formValue.riskLevel,
+      fax: formValue.fax || '',
+      website: formValue.website || ''
+    };
   }
 }

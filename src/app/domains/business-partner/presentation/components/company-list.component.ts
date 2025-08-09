@@ -17,7 +17,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 
 import { WorkflowDesignerComponent } from './workflow-designer.component';
-import { CreateCompanyDto, UpdateCompanyDto, CompanyResponseDto, ContactDto } from '../../application/dto/company.dto';
+import { CompanyResponseDto, ContactDto } from '../../application/dto/company.dto';
 import { CompanyMapper } from '../../application/mappers/company.mapper';
 import { CompanyService } from '../../application/services/company.service';
 import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
@@ -396,6 +396,7 @@ export class CompanyListComponent implements OnInit {
   private readonly message = inject(NzMessageService);
   private readonly modal = inject(NzModalService);
   private readonly companyMapper = inject(CompanyMapper);
+  private readonly fb = inject(FormBuilder);
 
   // 簡化狀態管理
   readonly searchQuery = signal('');
@@ -462,7 +463,7 @@ export class CompanyListComponent implements OnInit {
   }
 
   // 模態框操作
-  openModal(mode: 'create' | 'edit', company?: CompanyResponseDto): void {
+  openModal(mode: 'create' | 'edit', company?: any): void {
     this.modalMode = mode;
     this.modalVisible = true;
 

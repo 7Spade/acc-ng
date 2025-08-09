@@ -56,7 +56,7 @@ export class WorkflowService {
       this.currentWorkflowSignal.set(workflow);
     } catch (error) {
       console.warn('載入工作流程失敗，使用預設工作流程:', error);
-      this.currentWorkflowSignal.set(DynamicWorkflowStateVO.create({} as any, {} as any));
+      this.currentWorkflowSignal.set(DynamicWorkflowStateVO.create([], []));
     } finally {
       this.loadingSignal.set(false);
     }

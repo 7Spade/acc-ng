@@ -3,9 +3,6 @@
  * 極簡設計，統一錯誤處理
  */
 
-import { Injectable, inject } from '@angular/core';
-import { Observable, map, switchMap, filter, catchError, throwError } from 'rxjs';
-
 import { Company } from '../../domain/entities/company.entity';
 
 export class CompanyNotFoundException extends Error {
