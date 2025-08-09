@@ -1,9 +1,9 @@
-
 import { Injectable } from '@angular/core';
+
 import { Company } from '../../domain/entities/company.entity';
-import { CompanyResponseDto, CreateCompanyDto, UpdateCompanyDto, ContactDto } from '../dto/company.dto';
 import { CompanyStatusEnum } from '../../domain/value-objects/company-status.vo';
 import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
+import { CompanyResponseDto, CreateCompanyDto, UpdateCompanyDto, ContactDto } from '../dto/company.dto';
 
 @Injectable({
   providedIn: 'root'
