@@ -263,7 +263,7 @@ export class WorkflowService {
       map(() => {
         console.log('工作流程已成功保存到數據庫');
       }),
-      catchError(error => {
+      catchError((error: unknown) => {
         console.error('更新工作流程失敗:', error);
         this.message.error('保存工作流程失敗');
         throw error;

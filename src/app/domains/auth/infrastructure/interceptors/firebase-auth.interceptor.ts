@@ -17,7 +17,7 @@ export const firebaseAuthInterceptor: HttpInterceptorFn = (req, next) => {
     try {
       // 執行登入
       return from(authBridge.signInWithEmailPassword(body.userName, body.password)).pipe(
-        catchError(error => {
+        catchError((error: unknown) => {
           console.error('Firebase Auth Error:', error);
 
           // 如果 Firebase 認證失敗，返回錯誤
@@ -30,7 +30,7 @@ export const firebaseAuthInterceptor: HttpInterceptorFn = (req, next) => {
           return of(errorResponse);
         })
       );
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Auth Interceptor Error:', error);
 
       // 返回錯誤回應

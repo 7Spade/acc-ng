@@ -30,17 +30,32 @@ export class CompanyFirebaseRepository implements CompanyRepository {
   create(company: Company): Observable<Company> {
     const companiesRef = collection(this.firestore, this.collectionName);
     const data = company.toPlainObject();
-    delete data.id; // Let Firestore generate the ID
+    delete data['id']; // Let Firestore generate the ID
 
-    return from(addDoc(companiesRef, data)).pipe(map(docRef => new Company(docRef.id, ...Object.values(data))));
+    return from(addDoc(companiesRef, data as Record<string, unknown>)).pipe(
+      map(docRef => new Company(
+        docRef.id,
+        data['companyName'] as string,
+        data['businessRegistrationNumber'] as string,
+        data['address'] as string,
+        data['businessPhone'] as string,
+        data['status'] as string,
+        data['riskLevel'] as string,
+        (data['fax'] as string) || '',
+        (data['website'] as string) || '',
+        (data['contacts'] as Contact[]) || [],
+        new Date(data['createdAt'] as string),
+        new Date(data['updatedAt'] as string)
+      ))
+    );
   }
 
   update(company: Company): Observable<Company> {
     const docRef = doc(this.firestore, this.collectionName, company.id);
     const data = company.toPlainObject();
-    delete data.id;
+    delete data['id'];
 
-    return from(updateDoc(docRef, data)).pipe(map(() => company));
+    return from(updateDoc(docRef, data as Record<string, unknown>)).pipe(map(() => company));
   }
 
   delete(id: string): Observable<void> {
@@ -61,20 +76,20 @@ export class CompanyFirebaseRepository implements CompanyRepository {
   }
 
   private mapDocToCompany(doc: { id: string; data: () => Record<string, unknown> }): Company {
-    const data = doc.data() as Record<string, unknown>;
+    const data = doc.data();
     return new Company(
       doc.id,
-      data.companyName as string,
-      data.businessRegistrationNumber as string,
-      data.address as string,
-      data.businessPhone as string,
-      data.status as string,
-      data.riskLevel as string,
-      (data.fax as string) || '',
-      (data.website as string) || '',
-      (data.contacts as Contact[]) || [],
-      new Date(data.createdAt as string),
-      new Date(data.updatedAt as string)
+      data['companyName'] as string,
+      data['businessRegistrationNumber'] as string,
+      data['address'] as string,
+      data['businessPhone'] as string,
+      data['status'] as string,
+      data['riskLevel'] as string,
+      (data['fax'] as string) || '',
+      (data['website'] as string) || '',
+      (data['contacts'] as Contact[]) || [],
+      new Date(data['createdAt'] as string),
+      new Date(data['updatedAt'] as string)
     );
   }
 }
