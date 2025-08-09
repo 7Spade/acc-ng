@@ -218,8 +218,7 @@ export class UserLoginComponent implements OnDestroy {
           // 清空路由复用信息
           this.reuseTabService?.clear();
 
-          // 設置用戶Token信息
-          res.user.expired = +new Date() + 1000 * 60 * 60 * 24; // 24小時過期
+          // 設置用戶Token信息 (已經包含 expired 屬性，不需要再設定)
           this.tokenService.set(res.user);
 
           // 重新獲取 StartupService 內容

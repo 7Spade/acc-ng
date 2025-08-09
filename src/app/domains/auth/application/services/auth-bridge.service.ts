@@ -15,14 +15,20 @@ import { User } from '../../domain/entities/user.entity';
 import { Email } from '../../domain/value-objects/email.vo';
 import { UserProfile } from '../../domain/value-objects/user-profile.vo';
 
+import { LoginResponse } from '../dto/responses/login.response';
+
 /**
- * Token 模型介面
+ * @delon/auth Token 模型介面
  */
-interface ITokenModel {
-  msg: string;
-  user: {
-    [key: string]: string | number | boolean;
-  };
+interface DelonTokenModel {
+  token: string;
+  name: string;
+  email: string;
+  id: string;
+  uid?: string;
+  isAdmin: boolean;
+  time: number;
+  expired: number;
 }
 
 /**
@@ -39,7 +45,7 @@ export class AuthBridgeService {
   /**
    * 使用郵箱密碼登入
    */
-  signInWithEmailPassword(email: string, password: string): Observable<ITokenModel> {
+  signInWithEmailPassword(email: string, password: string): Observable<LoginResponse> {
     // 檢查是否為管理員帳號
     if (email === 'admin@company.com' && password === '123456') {
       return this.handleAdminLogin();
@@ -58,7 +64,7 @@ export class AuthBridgeService {
   /**
    * 使用 Google 登入
    */
-  signInWithGoogle(): Observable<ITokenModel> {
+  signInWithGoogle(): Observable<LoginResponse> {
     const provider = new GoogleAuthProvider();
     return from(signInWithPopup(this.firebaseAuth, provider)).pipe(
       map(credential => {
@@ -72,7 +78,7 @@ export class AuthBridgeService {
   /**
    * 匿名登入
    */
-  signInAnonymously(): Observable<ITokenModel> {
+  signInAnonymously(): Observable<LoginResponse> {
     return from(signInAnonymously(this.firebaseAuth)).pipe(
       map(credential => {
         const firebaseUser = credential.user;
@@ -144,7 +150,7 @@ export class AuthBridgeService {
   /**
    * 處理管理員登入
    */
-  private handleAdminLogin(): Observable<ITokenModel> {
+  private handleAdminLogin(): Observable<LoginResponse> {
     const email = Email.create('admin@company.com');
     const profile = UserProfile.create('Admin', 'User');
     const adminUser = User.createAdmin(email, profile);
@@ -155,13 +161,26 @@ export class AuthBridgeService {
   /**
    * 設置 @delon/auth token
    */
-  private setDelonAuthToken(user: User): ITokenModel {
+  private setDelonAuthToken(user: User): LoginResponse {
     const delonUser = user.toDelonAuthUser();
-    this.delonTokenService.set(delonUser);
+    
+    // 創建符合 @delon/auth 要求的 token 物件
+    const tokenModel: DelonTokenModel = {
+      token: `Bearer-${delonUser.id || 'token'}`,
+      name: delonUser.name || 'User',
+      email: delonUser.email || '',
+      id: delonUser.id || '',
+      uid: delonUser.uid,
+      isAdmin: delonUser.isAdmin || false,
+      time: +new Date(),
+      expired: +new Date() + 1000 * 60 * 60 * 24 // 24小時後過期
+    };
+
+    this.delonTokenService.set(tokenModel);
 
     return {
       msg: 'ok',
-      user: delonUser
+      user: tokenModel
     };
   }
 }
