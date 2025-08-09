@@ -37,9 +37,9 @@ export class CompanyMapper {
   }
 
   /**
-   * 將 Company 實體轉換為表單資料
+   * 將 CompanyResponseDto 轉換為表單值
    */
-  toFormGroup(company: CompanyResponseDto) {
+  toFormGroup(company: CompanyResponseDto): Record<string, any> {
     return {
       companyName: company.companyName,
       businessRegistrationNumber: company.businessRegistrationNumber,
@@ -69,7 +69,7 @@ export class CompanyMapper {
   }
 
   /**
-   * 將表單資料轉換為 UpdateCompanyDto
+   * 將表單值轉換為 UpdateCompanyDto
    */
   toUpdateCompanyDto(formValue: Record<string, unknown>): UpdateCompanyDto {
     return {

@@ -121,7 +121,7 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
                   <span nz-icon nzType="setting"></span>
                   工作流程
                 </button>
-                <button nz-button nzType="link" nzSize="small" (click)="openModal('edit', company)">
+                <button nz-button nzType="link" nzSize="small" (click)="openModal('edit', company as any)">
                   <span nz-icon nzType="edit"></span>
                 </button>
                 <button
@@ -606,7 +606,7 @@ export class CompanyListComponent implements OnInit {
     this.workflowCompanyId.set('');
   }
 
-  private markFormTouched(form = this.form): void {
+  private markFormTouched(form: any = this.form): void {
     Object.keys(form.controls).forEach(key => {
       const control = form.get(key);
       control?.markAsTouched();
