@@ -121,7 +121,7 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
                   <span nz-icon nzType="setting"></span>
                   工作流程
                 </button>
-                <button nz-button nzType="link" nzSize="small" (click)="openModal('edit', company as any)">
+                <button nz-button nzType="link" nzSize="small" (click)="openModal('edit', company)">
                   <span nz-icon nzType="edit"></span>
                 </button>
                 <button
@@ -463,13 +463,15 @@ export class CompanyListComponent implements OnInit {
   }
 
   // 模態框操作
-  openModal(mode: 'create' | 'edit', company?: CompanyResponseDto): void {
+  openModal(mode: 'create' | 'edit', company?: any): void {
     this.modalMode = mode;
     this.modalVisible = true;
 
     if (mode === 'edit' && company) {
       this.editingCompanyId = company.id;
-      this.form.patchValue(this.companyMapper.toFormGroup(company));
+      // 將 Company 實體轉換為表單值
+      const companyDto = this.companyMapper.toResponseDto(company);
+      this.form.patchValue(this.companyMapper.toFormGroup(companyDto));
     } else {
       this.form.reset({
         status: CompanyStatusEnum.Active,
