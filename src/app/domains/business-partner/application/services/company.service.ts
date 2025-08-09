@@ -27,6 +27,7 @@ export class CompanyService {
   private readonly companiesSignal = signal<CompanyResponseDto[]>([]);
   private readonly loadingSignal = signal(false);
   private readonly errorSignal = signal<string | null>(null);
+  private readonly isLoadedSignal = signal(false);
 
   // Computed 派生狀態
   readonly companies = computed(() => this.companiesSignal());
@@ -35,14 +36,18 @@ export class CompanyService {
   readonly hasCompanies = computed(() => this.companies().length > 0);
 
   constructor() {
-    // 自動載入初始數據
-    this.loadCompanies();
+    // 延遲載入，避免不必要的初始化
   }
 
   /**
-   * 載入公司列表
+   * 載入公司列表（帶緩存檢查）
    */
   loadCompanies(): void {
+    // 如果已經載入過且沒有錯誤，直接返回
+    if (this.isLoadedSignal() && !this.errorSignal()) {
+      return;
+    }
+
     this.loadingSignal.set(true);
     this.errorSignal.set(null);
 
@@ -58,6 +63,7 @@ export class CompanyService {
       )
       .subscribe(companies => {
         this.companiesSignal.set(companies);
+        this.isLoadedSignal.set(true);
       });
   }
 

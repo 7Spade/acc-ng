@@ -26,10 +26,20 @@ export class CompanyFirebaseRepository extends CompanyRepository {
 
     return from(getDocs(companiesRef)).pipe(
       map(querySnapshot => {
-        return querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          return this.fromFirestore({ ...data, id: doc.id });
-        });
+        if (querySnapshot.empty) {
+          return [];
+        }
+        
+        return querySnapshot.docs
+          .map(doc => {
+            const data = doc.data();
+            if (!data || !this.isValidCompanyData(data)) {
+              console.warn(`跳過無效的公司數據: ${doc.id}`);
+              return null;
+            }
+            return this.fromFirestore({ ...data, id: doc.id });
+          })
+          .filter(company => company !== null) as Company[];
       }),
       catchError(error => {
         console.error('獲取公司列表失敗:', error);
@@ -157,26 +167,40 @@ export class CompanyFirebaseRepository extends CompanyRepository {
   }
 
   /**
+   * 驗證公司數據是否有效
+   */
+  private isValidCompanyData(data: any): boolean {
+    return data && 
+           typeof data.companyName === 'string' && 
+           data.companyName.trim() !== '' &&
+           typeof data.businessRegistrationNumber === 'string' && 
+           data.businessRegistrationNumber.trim() !== '';
+  }
+
+  /**
    * 從 Firestore 格式轉換
    */
   private fromFirestore(data: any): Company {
-    const contacts = (data.contacts || []).map((c: any) =>
-      Contact.create({
-        name: c.name || '',
-        title: c.title || '',
-        email: c.email || '',
-        phone: c.phone || '',
-        isPrimary: c.isPrimary || false
-      })
-    );
+    // 安全處理聯絡人數據
+    const contacts = Array.isArray(data.contacts) 
+      ? data.contacts
+          .filter((c: any) => c && typeof c === 'object')
+          .map((c: any) => Contact.create({
+            name: (c.name || '').toString().trim(),
+            title: (c.title || '').toString().trim(),
+            email: (c.email || '').toString().trim(),
+            phone: (c.phone || '').toString().trim(),
+            isPrimary: Boolean(c.isPrimary)
+          }))
+      : [];
 
-    // 處理動態工作流程數據
+    // 安全處理動態工作流程數據
     let dynamicWorkflow: DynamicWorkflowStateVO | null = null;
-    if (data.dynamicWorkflow) {
+    if (data.dynamicWorkflow && typeof data.dynamicWorkflow === 'object') {
       try {
         dynamicWorkflow = DynamicWorkflowStateVO.fromPlainObject(data.dynamicWorkflow);
       } catch (error) {
-        console.warn('Failed to parse dynamic workflow data:', error);
+        console.warn(`工作流程數據解析失敗 (${data.id}):`, error);
         dynamicWorkflow = null;
       }
     }

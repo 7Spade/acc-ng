@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, ChangeDetectionStrategy, signal, computed } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, computed, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
@@ -574,8 +574,8 @@ import { RiskLevelEnum } from '../../domain/value-objects/risk-level.vo';
     `
   ]
 })
-export class CompanyListComponent {
-  protected readonly companyService = inject(CompanyService);
+export class CompanyListComponent implements OnInit {
+  private readonly companyService = inject(CompanyService);
   private readonly fb = inject(FormBuilder);
   private readonly message = inject(NzMessageService);
 
@@ -657,6 +657,11 @@ export class CompanyListComponent {
   readonly isWorkflowDesignerVisible = this.isWorkflowDesignerVisibleSignal.asReadonly();
   readonly currentWorkflowCompanyId = this.currentWorkflowCompanyIdSignal.asReadonly();
 
+  ngOnInit() {
+    // 只在需要時才載入數據
+    this.companyService.loadCompanies();
+  }
+
   /**
    * 搜尋公司
    */
@@ -665,7 +670,7 @@ export class CompanyListComponent {
   }
 
   /**
-   * 顯示創建模態框
+   * 顯示創 মামলা框
    */
   showCreateModal(): void {
     this.isCreateModalVisible = true;

@@ -44,22 +44,22 @@ export class WorkflowService {
   private loadWorkflow(companyId: string): void {
     this.loadingSignal.set(true);
 
-    // 從公司服務獲取公司資料
-    const companies = this.companyService.companies();
-    const company = companies.find(c => c.id === companyId);
-
-    if (company && (company as any).dynamicWorkflow) {
-      // 如果公司已有工作流程，載入它
-      const workflowData = (company as any).dynamicWorkflow;
-      const workflow = DynamicWorkflowStateVO.fromPlainObject(workflowData);
+    try {
+      const companies = this.companyService.companies();
+      const company = companies.find(c => c.id === companyId);
+      
+      const workflowData = company && (company as any).dynamicWorkflow;
+      const workflow = workflowData 
+        ? DynamicWorkflowStateVO.fromPlainObject(workflowData)
+        : DynamicWorkflowStateVO.create();
+        
       this.currentWorkflowSignal.set(workflow);
-    } else {
-      // 如果沒有工作流程，創建一個空的
-      const workflow = DynamicWorkflowStateVO.create();
-      this.currentWorkflowSignal.set(workflow);
+    } catch (error) {
+      console.warn('載入工作流程失敗，使用預設工作流程:', error);
+      this.currentWorkflowSignal.set(DynamicWorkflowStateVO.create());
+    } finally {
+      this.loadingSignal.set(false);
     }
-
-    this.loadingSignal.set(false);
   }
 
   /**
