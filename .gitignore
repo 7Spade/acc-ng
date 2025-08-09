@@ -43,7 +43,7 @@ Thumbs.db
 
 # lock
 /pnpm-lock.yaml
-/yarn.lock
+# /yarn.lock
 
 /delon-builds
 
