@@ -51,7 +51,14 @@ export class AuthBridgeService {
     return from(signInWithEmailAndPassword(this.firebaseAuth, email, password)).pipe(
       map(credential => {
         const firebaseUser = credential.user;
-        const user = User.fromFirebaseUser(firebaseUser);
+        // 轉換 Firebase 用戶為我們的 FirebaseUser 接口格式
+        const convertedUser: FirebaseUser = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL
+        };
+        const user = User.fromFirebaseUser(convertedUser);
         return this.setDelonAuthToken(user);
       })
     );
@@ -65,7 +72,14 @@ export class AuthBridgeService {
     return from(signInWithPopup(this.firebaseAuth, provider)).pipe(
       map(credential => {
         const firebaseUser = credential.user;
-        const user = User.fromFirebaseUser(firebaseUser);
+        // 轉換 Firebase 用戶為我們的 FirebaseUser 接口格式
+        const convertedUser: FirebaseUser = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL
+        };
+        const user = User.fromFirebaseUser(convertedUser);
         return this.setDelonAuthToken(user);
       })
     );
@@ -78,8 +92,15 @@ export class AuthBridgeService {
     return from(signInAnonymously(this.firebaseAuth)).pipe(
       map(credential => {
         const firebaseUser = credential.user;
+        // 轉換 Firebase 用戶為我們的 FirebaseUser 接口格式
+        const convertedUser: FirebaseUser = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL
+        };
         // 匿名用戶沒有 email，需要特殊處理
-        const user = User.fromAnonymousUser(firebaseUser);
+        const user = User.fromAnonymousUser(convertedUser);
         return this.setDelonAuthToken(user);
       })
     );
@@ -103,7 +124,14 @@ export class AuthBridgeService {
     return user(this.firebaseAuth).pipe(
       map(firebaseUser => {
         if (!firebaseUser) return null;
-        return User.fromFirebaseUser(firebaseUser);
+        // 轉換 Firebase 用戶為我們的 FirebaseUser 接口格式
+        const convertedUser: FirebaseUser = {
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL
+        };
+        return User.fromFirebaseUser(convertedUser);
       })
     );
   }

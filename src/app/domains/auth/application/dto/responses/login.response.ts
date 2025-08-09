@@ -1,16 +1,15 @@
-/**
- * 登入回應類型
- */
+
 export interface LoginResponse {
   msg: string;
-  user: {
-    token: string;
-    name: string;
-    email: string;
+  user?: {
     id: string;
+    email: string | null;
+    name: string;
+    token: string;
     uid?: string;
-    isAdmin: boolean;
-    time: number;
-    expired: number;
+    isAdmin?: boolean;
+    isAnonymous?: boolean;
+    time?: number;
+    expired?: number;
   };
 }

@@ -61,7 +61,9 @@ export class User extends BaseAggregateRoot<UserId> {
   static fromAnonymousUser(firebaseUser: FirebaseUser): User {
     // 匿名用戶不需要 email，直接創建用戶
     const profile = UserProfile.create('Anonymous', 'User');
-    const user = new User(UserId.create(firebaseUser.uid), null as any, profile, firebaseUser.uid, false);
+    // 為匿名用戶創建一個空的 Email 對象
+    const emptyEmail = Email.create('');
+    const user = new User(UserId.create(firebaseUser.uid), emptyEmail, profile, firebaseUser.uid, false);
 
     return user;
   }
