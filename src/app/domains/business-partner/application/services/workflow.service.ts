@@ -48,7 +48,7 @@ export class WorkflowService {
       const companies = this.companyService.companies();
       const company = companies.find(c => c.id === companyId);
 
-      const workflowData = company && (company as any).dynamicWorkflow;
+      const workflowData = company && (company as { dynamicWorkflow?: unknown }).dynamicWorkflow;
       const workflow = workflowData ? DynamicWorkflowStateVO.fromPlainObject(workflowData) : DynamicWorkflowStateVO.create();
 
       this.currentWorkflowSignal.set(workflow);
@@ -250,7 +250,7 @@ export class WorkflowService {
     }
 
     // 創建更新數據，包含動態工作流程
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       dynamicWorkflow: workflow.toPlainObject()
     };
 

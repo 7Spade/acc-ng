@@ -12,7 +12,7 @@ export const firebaseAuthInterceptor: HttpInterceptorFn = (req, next) => {
   // 只攔截登入請求
   if (req.url.includes('/login/account') && req.method === 'POST') {
     const authBridge = inject(AuthBridgeService);
-    const body = req.body as any;
+    const body = req.body as { userName: string; password: string };
 
     try {
       // 執行登入

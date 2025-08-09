@@ -43,7 +43,5 @@ export class CompanyValidationHelper {
    */
   static isCompanyExists(company: unknown): company is Company {
     return company !== null && company !== undefined;
-  }ny: any): company is NonNullable<typeof company> {
-    return company !== null && company !== undefined;
   }
 }

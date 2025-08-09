@@ -154,10 +154,10 @@ export class Company {
   }
 
   private static generateId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    return Date.now().toString(36) + Math.random().toString(36).substring(2);
   }
 
-  toPlainObject(): any {
+  toPlainObject(): Record<string, unknown> {
     return {
       id: this.id,
       companyName: this.companyName,

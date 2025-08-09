@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
 import { Observable, from, map } from 'rxjs';
 
-import { Company } from '../../domain/entities/company.entity';
+import { Company, Contact } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../domain/repositories/company.repository';
 
 @Injectable({
@@ -60,7 +60,7 @@ export class CompanyFirebaseRepository implements CompanyRepository {
     );
   }
 
-  private mapDocToCompany(doc: any): Company {
+  private mapDocToCompany(doc: { id: string; data: () => Record<string, unknown> }): Company {
     const data = doc.data() as Record<string, unknown>;
     return new Company(
       doc.id,
@@ -72,9 +72,9 @@ export class CompanyFirebaseRepository implements CompanyRepository {
       data.riskLevel as string,
       (data.fax as string) || '',
       (data.website as string) || '',
-      (data.contacts as any[]) || [],
-      new Date(data.createdAt as any),
-      new Date(data.updatedAt as any)
+      (data.contacts as Contact[]) || [],
+      new Date(data.createdAt as string),
+      new Date(data.updatedAt as string)
     );
   }
 }
