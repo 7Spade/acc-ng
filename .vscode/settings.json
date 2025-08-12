@@ -36,5 +36,5 @@
     ".prettierrc": "jsonc"
   },
   "typescript.referencesCodeLens.enabled": true,
-  "kiroAgent.configureMCP": "Disabled"
+  "kiroAgent.configureMCP": "Enabled"
 }
