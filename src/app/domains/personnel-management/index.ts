@@ -10,3 +10,6 @@ export * from './presentation';
 // Infrastructure Layer
 // export * from './infrastructure';
 
+// Configuration
+export * from './personnel-management.providers';
+
