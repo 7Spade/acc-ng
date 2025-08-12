@@ -1,1 +1,0 @@
-import{a}from"./chunk-W6JBHUJ2.js";import"./chunk-O5M2VN7A.js";import"./chunk-SBNOWNA2.js";import"./chunk-VAGS5EVQ.js";import"./chunk-C6HMYUIG.js";import"./chunk-KZ3BMPVL.js";import"./chunk-B4BFXAHO.js";import"./chunk-GFRWIPKG.js";import"./chunk-AV6MXKVK.js";import"./chunk-57BLH6QZ.js";export{a as PartnerListComponent};

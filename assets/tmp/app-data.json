@@ -90,6 +90,12 @@
           "link": "/widgets",
           "icon": "anticon-appstore",
           "badge": 2
+        },
+        {
+          "text": "合作夥伴管理",
+          "i18n": "menu.business-partners",
+          "link": "/business-partners",
+          "icon": "anticon-team"
         }
       ]
     },
