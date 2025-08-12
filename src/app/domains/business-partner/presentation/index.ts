@@ -1,4 +1,4 @@
 // Components
-export * from './components/company-list.component';
-export * from './components/payment-workflow.component';
-export * from './components/workflow-designer.component';
+export * from './components/business-partner-list.component';
+export * from './components/company-form.component';
+export * from './components/company-detail.component';

@@ -71,7 +71,7 @@
               "i18n": "menu.dashboard.project-management"
             },
             {
-              "text": "場地管理",
+              "text": "現場管理",
               "link": "/dashboard/site-management",
               "i18n": "menu.dashboard.site-management"
             }

@@ -4,6 +4,8 @@ import { Observable, from, map } from 'rxjs';
 
 import { Company, Contact } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../domain/repositories/company.repository';
+import { CompanyStatus } from '../../domain/value-objects/company-status.vo';
+import { RiskLevel } from '../../domain/value-objects/risk-level.vo';
 
 @Injectable({
   providedIn: 'root'
@@ -85,19 +87,61 @@ export class CompanyFirebaseRepository implements CompanyRepository {
 
   private mapDocToCompany(doc: { id: string; data: () => Record<string, unknown> }): Company {
     const data = doc.data();
+    
+    // Map status string to enum
+    const status = this.mapStatusString(data['status'] as string);
+    const riskLevel = this.mapRiskLevelString(data['riskLevel'] as string);
+    
     return new Company(
       doc.id,
       data['companyName'] as string,
       data['businessRegistrationNumber'] as string,
       data['address'] as string,
       data['businessPhone'] as string,
-      data['status'] as string,
-      data['riskLevel'] as string,
+      status,
+      riskLevel,
       (data['fax'] as string) || '',
       (data['website'] as string) || '',
       (data['contacts'] as Contact[]) || [],
       new Date(data['createdAt'] as string),
       new Date(data['updatedAt'] as string)
     );
+  }
+
+  private mapStatusString(statusStr: string): CompanyStatus {
+    // Map legacy status strings to new enum values
+    switch (statusStr) {
+      case 'active':
+      case '啟用中':
+        return CompanyStatus.Active;
+      case 'inactive':
+      case '停用':
+        return CompanyStatus.Inactive;
+      case 'pending':
+      case '待審核':
+        return CompanyStatus.Pending;
+      case 'blacklisted':
+      case '黑名單':
+        return CompanyStatus.Blacklisted;
+      default:
+        return CompanyStatus.Active;
+    }
+  }
+
+  private mapRiskLevelString(riskStr: string): RiskLevel {
+    // Map legacy risk level strings to new enum values
+    switch (riskStr) {
+      case 'low':
+      case '低':
+        return RiskLevel.Low;
+      case 'medium':
+      case '中':
+        return RiskLevel.Medium;
+      case 'high':
+      case '高':
+        return RiskLevel.High;
+      default:
+        return RiskLevel.Low;
+    }
   }
 }

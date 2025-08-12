@@ -1,14 +1,9 @@
-// Domain
+// Business Partner Domain Exports
 export * from './domain';
-
-// Application
 export * from './application';
-
-// Infrastructure
 export * from './infrastructure';
 
-// Presentation
-export * from './presentation';
-
-// Configuration
-export * from './business-partner.providers';
+// Presentation Components
+export * from './presentation/components/business-partner-list.component';
+export * from './presentation/components/company-form.component';
+export * from './presentation/components/company-detail.component';

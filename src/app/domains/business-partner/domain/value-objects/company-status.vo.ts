@@ -1,45 +1,81 @@
-import { ValueObject } from '@shared';
-
-export enum CompanyStatusEnum {
-  Active = '啟用中',
-  Inactive = '停用',
-  Blacklisted = '黑名單'
-}
-
-export interface CompanyStatusProps {
-  value: CompanyStatusEnum;
+/**
+ * 公司狀態枚舉
+ * 簡化設計，使用枚舉 + 工具函數
+ */
+export enum CompanyStatus {
+  Active = 'active',
+  Inactive = 'inactive',
+  Pending = 'pending',
+  Blacklisted = 'blacklisted'
 }
 
 /**
- * 公司狀態值對象
- * 極簡設計，包含基本業務邏輯和顯示方法
+ * 公司狀態顯示文本
  */
-export class CompanyStatus extends ValueObject<CompanyStatusProps> {
-  private constructor(props: CompanyStatusProps) {
-    super(props);
-  }
+export const COMPANY_STATUS_LABELS: Record<CompanyStatus, string> = {
+  [CompanyStatus.Active]: '啟用',
+  [CompanyStatus.Inactive]: '停用',
+  [CompanyStatus.Pending]: '待審核',
+  [CompanyStatus.Blacklisted]: '黑名單'
+};
 
-  static create(value: CompanyStatusEnum): CompanyStatus {
-    if (!Object.values(CompanyStatusEnum).includes(value)) {
-      throw new Error(`Invalid company status: ${value}`);
+/**
+ * 公司狀態工具函數
+ */
+export class CompanyStatusUtils {
+  /**
+   * 創建公司狀態
+   */
+  static create(value: string): CompanyStatus {
+    if (Object.values(CompanyStatus).includes(value as CompanyStatus)) {
+      return value as CompanyStatus;
     }
-    return new CompanyStatus({ value });
+    throw new Error(`Invalid company status: ${value}`);
   }
 
-  get value(): CompanyStatusEnum {
-    return this.props.value;
+  /**
+   * 獲取顯示標籤
+   */
+  static getLabel(status: CompanyStatus): string {
+    return COMPANY_STATUS_LABELS[status] || status;
   }
 
-  // 核心業務邏輯
-  isActive(): boolean {
-    return this.props.value === CompanyStatusEnum.Active;
+  /**
+   * 檢查是否為啟用狀態
+   */
+  static isActive(status: CompanyStatus): boolean {
+    return status === CompanyStatus.Active;
   }
 
-  isBlacklisted(): boolean {
-    return this.props.value === CompanyStatusEnum.Blacklisted;
+  /**
+   * 檢查是否為黑名單
+   */
+  static isBlacklisted(status: CompanyStatus): boolean {
+    return status === CompanyStatus.Blacklisted;
   }
 
-  override toString(): string {
-    return this.props.value;
+  /**
+   * 檢查是否需要審核
+   */
+  static requiresApproval(status: CompanyStatus): boolean {
+    return status === CompanyStatus.Pending;
+  }
+
+  /**
+   * 獲取狀態顏色
+   */
+  static getColor(status: CompanyStatus): string {
+    switch (status) {
+      case CompanyStatus.Active:
+        return 'success';
+      case CompanyStatus.Inactive:
+        return 'default';
+      case CompanyStatus.Pending:
+        return 'warning';
+      case CompanyStatus.Blacklisted:
+        return 'error';
+      default:
+        return 'default';
+    }
   }
 }

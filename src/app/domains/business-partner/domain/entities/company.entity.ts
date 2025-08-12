@@ -1,21 +1,19 @@
-import { CompanyStatusEnum } from '../value-objects/company-status.vo';
-import { RiskLevelEnum } from '../value-objects/risk-level.vo';
+import { CompanyStatus } from '../value-objects/company-status.vo';
+import { RiskLevel } from '../value-objects/risk-level.vo';
+import { CompanyId } from '../value-objects/company-id.vo';
+import { Contact, ContactUtils, CreateContactProps } from './contact.entity';
 
-export interface Contact {
-  name: string;
-  title: string;
-  email: string;
-  phone: string;
-  isPrimary: boolean;
-}
+// Re-export Contact types for external use
+export type { Contact, CreateContactProps };
+export { ContactUtils };
 
 export interface CreateCompanyProps {
   companyName: string;
   businessRegistrationNumber: string;
   address: string;
   businessPhone: string;
-  status?: CompanyStatusEnum;
-  riskLevel?: RiskLevelEnum;
+  status?: CompanyStatus;
+  riskLevel?: RiskLevel;
   fax?: string;
   website?: string;
   contacts?: Contact[];
@@ -28,8 +26,8 @@ export class Company {
     public businessRegistrationNumber: string,
     public address: string,
     public businessPhone: string,
-    public status = 'active',
-    public riskLevel = 'low',
+    public status: CompanyStatus = CompanyStatus.Active,
+    public riskLevel: RiskLevel = RiskLevel.Low,
     public fax = '',
     public website = '',
     public contacts: Contact[] = [],
@@ -44,13 +42,13 @@ export class Company {
     if (!props.businessPhone?.trim()) throw new Error('Business phone is required');
 
     return new Company(
-      this.generateId(),
+      CompanyId.generate(),
       props.companyName.trim(),
       props.businessRegistrationNumber.trim(),
       props.address.trim(),
       props.businessPhone.trim(),
-      props.status || 'active',
-      props.riskLevel || 'low',
+      props.status || CompanyStatus.Active,
+      props.riskLevel || RiskLevel.Low,
       props.fax?.trim() || '',
       props.website?.trim() || '',
       props.contacts || []
@@ -141,20 +139,17 @@ export class Company {
     );
   }
 
+  // 簡化的業務邏輯方法
   isActive(): boolean {
-    return this.status === 'active';
+    return this.status === CompanyStatus.Active;
   }
 
   isHighRisk(): boolean {
-    return this.riskLevel === 'high';
+    return this.riskLevel === RiskLevel.High;
   }
 
   getPrimaryContact(): Contact | null {
     return this.contacts.find(c => c.isPrimary) || null;
-  }
-
-  private static generateId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substring(2);
   }
 
   toPlainObject(): Record<string, unknown> {

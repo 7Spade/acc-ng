@@ -7,10 +7,10 @@ import { Component } from '@angular/core';
   imports: [CommonModule],
   template: `
     <div class="site-list-container">
-      <h2>場地管理</h2>
+      <h2>現場管理</h2>
       <div class="site-list-content">
-        <p>場地列表頁面 - DDD架構</p>
-        <!-- 這裡將包含場地列表的具體實現 -->
+        <p>現場列表頁面 - DDD架構</p>
+        <!-- 這裡將包含現場列表的具體實現 -->
       </div>
     </div>
   `,

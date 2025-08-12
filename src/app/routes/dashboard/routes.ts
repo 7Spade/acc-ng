@@ -5,7 +5,7 @@ import { DashboardMonitorComponent } from './monitor/monitor.component';
 import { DashboardV1Component } from './v1/v1.component';
 import { DashboardWorkplaceComponent } from './workplace/workplace.component';
 import { BudgetListComponent } from '../../domains/budget-management';
-import { CompanyListComponent } from '../../domains/business-partner';
+import { CompanyFormComponent } from '../../domains/business-partner';
 import { ContractListComponent, ContractCreateComponent } from '../../domains/contract-management';
 import { TaskListComponent } from '../../domains/task-management';
 import { PersonnelListComponent } from '../../domains/personnel-management';
@@ -27,7 +27,7 @@ export const routes: Routes = [
   },
   { path: 'task-management', component: TaskListComponent },
   { path: 'budget-management', component: BudgetListComponent },
-  { path: 'business-partner', component: CompanyListComponent },
+  { path: 'business-partner', component: CompanyFormComponent },
   { path: 'personnel-management', component: PersonnelListComponent },
   { path: 'project-management', component: ProjectListComponent },
   { path: 'site-management', component: SiteListComponent }

@@ -1,8 +1,8 @@
 /**
- * 聯絡人實體
- * 極簡設計，只包含核心屬性和方法
+ * 聯絡人實體 - 簡化為接口
+ * 極簡設計，只包含核心屬性
  */
-export interface ContactProps {
+export interface Contact {
   name: string;
   title: string;
   email: string;
@@ -10,49 +10,55 @@ export interface ContactProps {
   isPrimary: boolean;
 }
 
-export class Contact {
-  constructor(
-    public readonly name: string,
-    public readonly title: string,
-    public readonly email: string,
-    public readonly phone: string,
-    public readonly isPrimary: boolean
-  ) {}
+/**
+ * 聯絡人創建屬性
+ */
+export interface CreateContactProps {
+  name: string;
+  title?: string;
+  email: string;
+  phone?: string;
+  isPrimary?: boolean;
+}
 
-  static create(props: ContactProps): Contact {
-    // 基本驗證
+/**
+ * 聯絡人工具函數
+ */
+export class ContactUtils {
+  /**
+   * 創建聯絡人
+   */
+  static create(props: CreateContactProps): Contact {
     if (!props.name?.trim()) throw new Error('Contact name is required');
     if (!props.email?.trim()) throw new Error('Contact email is required');
 
-    return new Contact(
-      props.name.trim(),
-      props.title?.trim() || '',
-      props.email.trim(),
-      props.phone?.trim() || '',
-      props.isPrimary || false
-    );
+    return {
+      name: props.name.trim(),
+      title: props.title?.trim() || '',
+      email: props.email.trim(),
+      phone: props.phone?.trim() || '',
+      isPrimary: props.isPrimary || false
+    };
   }
 
-  // 不可變更新方法
-  updateName(name: string): Contact {
-    return new Contact(name, this.title, this.email, this.phone, this.isPrimary);
+  /**
+   * 驗證聯絡人
+   */
+  static isValid(contact: Contact): boolean {
+    return !!(contact.name?.trim() && contact.email?.trim());
   }
 
-  updateEmail(email: string): Contact {
-    return new Contact(this.name, this.title, email, this.phone, this.isPrimary);
+  /**
+   * 獲取顯示名稱
+   */
+  static getDisplayName(contact: Contact): string {
+    return contact.title ? `${contact.name} (${contact.title})` : contact.name;
   }
 
-  setAsPrimary(): Contact {
-    return new Contact(this.name, this.title, this.email, this.phone, true);
-  }
-
-  // 顯示方法
-  getDisplayName(): string {
-    return this.title ? `${this.name} (${this.title})` : this.name;
-  }
-
-  // 驗證方法
-  isValid(): boolean {
-    return !!(this.name?.trim() && this.email?.trim());
+  /**
+   * 設置為主要聯絡人
+   */
+  static setAsPrimary(contact: Contact): Contact {
+    return { ...contact, isPrimary: true };
   }
 }

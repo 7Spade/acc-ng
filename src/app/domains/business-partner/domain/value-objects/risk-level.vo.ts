@@ -1,45 +1,86 @@
-import { ValueObject } from '@shared';
-
-export enum RiskLevelEnum {
-  Low = '低',
-  Medium = '中',
-  High = '高'
-}
-
-export interface RiskLevelProps {
-  value: RiskLevelEnum;
+/**
+ * 風險等級枚舉
+ * 簡化設計，使用枚舉 + 工具函數
+ */
+export enum RiskLevel {
+  Low = 'low',
+  Medium = 'medium',
+  High = 'high'
 }
 
 /**
- * 風險等級值對象
- * 極簡設計，包含基本業務邏輯和顯示方法
+ * 風險等級顯示文本
  */
-export class RiskLevel extends ValueObject<RiskLevelProps> {
-  private constructor(props: RiskLevelProps) {
-    super(props);
-  }
+export const RISK_LEVEL_LABELS: Record<RiskLevel, string> = {
+  [RiskLevel.Low]: '低風險',
+  [RiskLevel.Medium]: '中風險',
+  [RiskLevel.High]: '高風險'
+};
 
-  static create(value: RiskLevelEnum): RiskLevel {
-    if (!Object.values(RiskLevelEnum).includes(value)) {
-      throw new Error(`Invalid risk level: ${value}`);
+/**
+ * 風險等級工具函數
+ */
+export class RiskLevelUtils {
+  /**
+   * 創建風險等級
+   */
+  static create(value: string): RiskLevel {
+    if (Object.values(RiskLevel).includes(value as RiskLevel)) {
+      return value as RiskLevel;
     }
-    return new RiskLevel({ value });
+    throw new Error(`Invalid risk level: ${value}`);
   }
 
-  get value(): RiskLevelEnum {
-    return this.props.value;
+  /**
+   * 獲取顯示標籤
+   */
+  static getLabel(riskLevel: RiskLevel): string {
+    return RISK_LEVEL_LABELS[riskLevel] || riskLevel;
   }
 
-  // 核心業務邏輯
-  isHigh(): boolean {
-    return this.props.value === RiskLevelEnum.High;
+  /**
+   * 檢查是否為高風險
+   */
+  static isHigh(riskLevel: RiskLevel): boolean {
+    return riskLevel === RiskLevel.High;
   }
 
-  requiresApproval(): boolean {
-    return this.isHigh();
+  /**
+   * 檢查是否需要審核
+   */
+  static requiresApproval(riskLevel: RiskLevel): boolean {
+    return riskLevel === RiskLevel.High;
   }
 
-  override toString(): string {
-    return this.props.value;
+  /**
+   * 獲取風險等級顏色
+   */
+  static getColor(riskLevel: RiskLevel): string {
+    switch (riskLevel) {
+      case RiskLevel.Low:
+        return 'success';
+      case RiskLevel.Medium:
+        return 'warning';
+      case RiskLevel.High:
+        return 'error';
+      default:
+        return 'default';
+    }
+  }
+
+  /**
+   * 獲取風險等級數值
+   */
+  static getNumericValue(riskLevel: RiskLevel): number {
+    switch (riskLevel) {
+      case RiskLevel.Low:
+        return 1;
+      case RiskLevel.Medium:
+        return 2;
+      case RiskLevel.High:
+        return 3;
+      default:
+        return 0;
+    }
   }
 }

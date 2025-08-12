@@ -1,13 +1,9 @@
-// Entities
+// Domain Layer Exports
 export * from './entities/company.entity';
-export { Contact } from './entities/contact.entity';
+export * from './entities/contact.entity';
+export * from './repositories/company.repository';
 
 // Value Objects
-export * from './value-objects/company-id.vo';
 export * from './value-objects/company-status.vo';
 export * from './value-objects/risk-level.vo';
-export * from './value-objects/dynamic-workflow-state.vo';
-export * from './value-objects/payment-workflow-state.vo';
-
-// Repositories
-export * from './repositories/company.repository';
+export * from './value-objects/company-id.vo';
