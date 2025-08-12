@@ -1,10 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, map, catchError, finalize, of, switchMap, tap } from 'rxjs';
 
-import { Company, CreateCompanyProps, Contact } from '../../domain/entities/company.entity';
+import { Company, CreateCompanyProps, Contact, CompanyStatus, RiskLevel } from '../../domain/entities/company.entity';
 import { COMPANY_REPOSITORY } from '../../domain/repositories/company.repository';
-import { CompanyStatus } from '../../domain/value-objects/company-status.vo';
-import { RiskLevel } from '../../domain/value-objects/risk-level.vo';
 
 /**
  * 優化後的 Business Partner 服務

@@ -17,9 +17,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 
 // Domain imports
-import { Company, Contact } from '../../domain/entities/company.entity';
-import { CompanyStatus, CompanyStatusUtils } from '../../domain/value-objects/company-status.vo';
-import { RiskLevel, RiskLevelUtils } from '../../domain/value-objects/risk-level.vo';
+import { Company, Contact, CompanyStatus, RiskLevel, COMPANY_STATUS_LABELS, RISK_LEVEL_LABELS, COMPANY_STATUS_COLORS, RISK_LEVEL_COLORS } from '../../domain/entities/company.entity';
 import { BusinessPartnerService } from '../../application/services/business-partner.service';
 
 /**
@@ -161,13 +159,13 @@ import { BusinessPartnerService } from '../../application/services/business-part
                   </td>
                   <td>{{ company.businessRegistrationNumber }}</td>
                   <td>
-                    <nz-tag [nzColor]="CompanyStatusUtils.getColor(company.status)">
-                      {{ CompanyStatusUtils.getLabel(company.status) }}
+                    <nz-tag [nzColor]="CompanyStatusColors[company.status]">
+                      {{ CompanyStatusLabels[company.status] }}
                     </nz-tag>
                   </td>
                   <td>
-                    <nz-tag [nzColor]="RiskLevelUtils.getColor(company.riskLevel)">
-                      {{ RiskLevelUtils.getLabel(company.riskLevel) }}
+                    <nz-tag [nzColor]="RiskLevelColors[company.riskLevel]">
+                      {{ RiskLevelLabels[company.riskLevel] }}
                     </nz-tag>
                   </td>
                   <td>{{ company.contacts.length }}</td>
@@ -282,9 +280,11 @@ export class BusinessPartnerListComponent {
     )
   );
 
-  // 工具類引用
-  readonly CompanyStatusUtils = CompanyStatusUtils;
-  readonly RiskLevelUtils = RiskLevelUtils;
+  // 工具常數引用
+  readonly CompanyStatusLabels = COMPANY_STATUS_LABELS;
+  readonly RiskLevelLabels = RISK_LEVEL_LABELS;
+  readonly CompanyStatusColors = COMPANY_STATUS_COLORS;
+  readonly RiskLevelColors = RISK_LEVEL_COLORS;
 
   // 事件處理方法
   onSearchChange(query: string): void {

@@ -11,9 +11,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
-import { Company } from '../../domain/entities/company.entity';
-import { CompanyStatusUtils } from '../../domain/value-objects/company-status.vo';
-import { RiskLevelUtils } from '../../domain/value-objects/risk-level.vo';
+import { Company, COMPANY_STATUS_LABELS, RISK_LEVEL_LABELS, COMPANY_STATUS_COLORS, RISK_LEVEL_COLORS } from '../../domain/entities/company.entity';
 
 /**
  * 現代化的公司詳情組件
@@ -74,14 +72,14 @@ import { RiskLevelUtils } from '../../domain/value-objects/risk-level.vo';
             </nz-descriptions-item>
             
             <nz-descriptions-item nzTitle="狀態">
-              <nz-tag [nzColor]="CompanyStatusUtils.getColor(company.status)">
-                {{ CompanyStatusUtils.getLabel(company.status) }}
+              <nz-tag [nzColor]="CompanyStatusColors[company.status]">
+                {{ CompanyStatusLabels[company.status] }}
               </nz-tag>
             </nz-descriptions-item>
             
             <nz-descriptions-item nzTitle="風險等級">
-              <nz-tag [nzColor]="RiskLevelUtils.getColor(company.riskLevel)">
-                {{ RiskLevelUtils.getLabel(company.riskLevel) }}
+              <nz-tag [nzColor]="RiskLevelColors[company.riskLevel]">
+                {{ RiskLevelLabels[company.riskLevel] }}
               </nz-tag>
             </nz-descriptions-item>
             
@@ -234,9 +232,11 @@ import { RiskLevelUtils } from '../../domain/value-objects/risk-level.vo';
 export class CompanyDetailComponent {
   @Input() company: Company | null = null;
 
-  // 工具類引用
-  readonly CompanyStatusUtils = CompanyStatusUtils;
-  readonly RiskLevelUtils = RiskLevelUtils;
+  // 工具常數引用
+  readonly CompanyStatusLabels = COMPANY_STATUS_LABELS;
+  readonly RiskLevelLabels = RISK_LEVEL_LABELS;
+  readonly CompanyStatusColors = COMPANY_STATUS_COLORS;
+  readonly RiskLevelColors = RISK_LEVEL_COLORS;
 
   // 事件輸出
   onEdit(): void {

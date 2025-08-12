@@ -17,9 +17,7 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 
 // Domain imports
-import { Company, Contact, ContactUtils } from '../../domain/entities/company.entity';
-import { CompanyStatus, CompanyStatusUtils } from '../../domain/value-objects/company-status.vo';
-import { RiskLevel, RiskLevelUtils } from '../../domain/value-objects/risk-level.vo';
+import { Company, Contact, ContactUtils, CompanyStatus, RiskLevel, COMPANY_STATUS_LABELS, RISK_LEVEL_LABELS } from '../../domain/entities/company.entity';
 import { BusinessPartnerService } from '../../application/services/business-partner.service';
 import { CreateCompanyDto, SimplifiedContactDto } from '../../application/dto/simplified-company.dto';
 

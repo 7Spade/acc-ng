@@ -1,5 +1,4 @@
-import { CompanyStatus } from '../../domain/value-objects/company-status.vo';
-import { RiskLevel } from '../../domain/value-objects/risk-level.vo';
+import { CompanyStatus, RiskLevel } from '../../domain/entities/company.entity';
 
 export interface SimplifiedCompanyDto {
   id: string;

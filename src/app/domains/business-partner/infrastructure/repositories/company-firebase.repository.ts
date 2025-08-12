@@ -2,10 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, UpdateData } from '@angular/fire/firestore';
 import { Observable, from, map } from 'rxjs';
 
-import { Company, Contact } from '../../domain/entities/company.entity';
+import { Company, Contact, CompanyStatus, RiskLevel } from '../../domain/entities/company.entity';
 import { CompanyRepository } from '../../domain/repositories/company.repository';
-import { CompanyStatus } from '../../domain/value-objects/company-status.vo';
-import { RiskLevel } from '../../domain/value-objects/risk-level.vo';
 
 @Injectable({
   providedIn: 'root'
