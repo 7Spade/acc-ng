@@ -1,9 +1,13 @@
 // Business Partner Domain Exports
+
+// Domain Layer
 export * from './domain';
+
+// Application Layer
 export * from './application';
+
+// Infrastructure Layer
 export * from './infrastructure';
 
-// Presentation Components
-export * from './presentation/components/business-partner-list.component';
-export * from './presentation/components/company-form.component';
-export * from './presentation/components/company-detail.component';
+// Presentation Layer
+export * from './presentation';
