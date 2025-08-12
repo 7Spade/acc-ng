@@ -5,12 +5,8 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "./",
-        "./.cursor",
-        "./src",
-        "./functions",
-        "./custom_modes",
-        "./memory-bank"
+        "./.kiro",
+        "./src"
       ],
       "autoApprove": [
         "list_allowed_directories",
