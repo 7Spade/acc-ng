@@ -1,5 +1,5 @@
 // Partner Firebase Service - 極簡主義實現
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, computed } from '@angular/core';
 import { 
   Firestore, 
   collection, 
@@ -22,8 +22,7 @@ import {
   Partner, 
   CreatePartnerData, 
   UpdatePartnerData, 
-  PartnerDocument,
-  Contact
+  PartnerDocument
 } from '../../domain/entities/partner.entity';
 import { generateId } from '../../domain/value-objects/utils';
 
@@ -85,6 +84,10 @@ export class PartnerFirebaseService {
 
   // 根據 ID 獲取單個合作夥伴
   async getPartnerById(id: string): Promise<Partner | null> {
+    if (!id?.trim()) {
+      throw new Error('Partner ID is required');
+    }
+
     try {
       const docRef = doc(this.firestore, 'partners', id);
       const docSnap = await getDoc(docRef);

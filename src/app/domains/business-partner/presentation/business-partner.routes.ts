@@ -15,6 +15,12 @@ export const BUSINESS_PARTNER_ROUTES: Routes = [
     title: '新增合作夥伴'
   },
   {
+    path: ':id',
+    loadComponent: () => import('./pages/partner-detail/partner-detail.component')
+      .then(m => m.PartnerDetailComponent),
+    title: '合作夥伴詳情'
+  },
+  {
     path: ':id/edit',
     loadComponent: () => import('./pages/partner-form/partner-form.component')
       .then(m => m.PartnerFormComponent),

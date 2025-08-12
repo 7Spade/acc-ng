@@ -18,7 +18,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 import { PartnerFirebaseService } from '../../../infrastructure/repositories/partner-firebase.service';
 import { INDUSTRIES } from '../../../domain/value-objects/constants';
-import { isValidEmail } from '../../../domain/value-objects/utils';
+
 
 @Component({
   selector: 'app-partner-form',
