@@ -410,7 +410,7 @@ export class PartnerListComponent {
 }
 ```
 
-**PartnerFormComponent**
+**PartnerFormComponent (極簡主義 + Signals)**
 ```typescript
 @Component({
   selector: 'app-partner-form',
@@ -428,10 +428,9 @@ export class PartnerListComponent {
           <nz-form-label nzRequired>Industry</nz-form-label>
           <nz-form-control>
             <nz-select formControlName="industry" nzPlaceHolder="Select industry">
-              <nz-option nzValue="Technology" nzLabel="Technology"></nz-option>
-              <nz-option nzValue="Finance" nzLabel="Finance"></nz-option>
-              <nz-option nzValue="Healthcare" nzLabel="Healthcare"></nz-option>
-              <nz-option nzValue="Manufacturing" nzLabel="Manufacturing"></nz-option>
+              @for (industry of industries; track industry) {
+                <nz-option [nzValue]="industry" [nzLabel]="industry"></nz-option>
+              }
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -446,20 +445,18 @@ export class PartnerListComponent {
         <nz-form-item>
           <nz-form-label>Address</nz-form-label>
           <nz-form-control>
-            <textarea nz-input formControlName="address" rows="3"></textarea>
+            <textarea nz-input formControlName="address" rows="3" placeholder="Company address"></textarea>
           </nz-form-control>
         </nz-form-item>
 
-        <!-- Contacts Section -->
+        <!-- Simplified Contacts Section -->
         <nz-form-item>
           <nz-form-label nzRequired>Contacts</nz-form-label>
           <nz-form-control>
-            <div formArrayName="contacts">
-              <div *ngFor="let contact of contactsArray.controls; let i = index" 
-                   [formGroupName]="i" 
-                   class="contact-form">
-                <nz-card nzSize="small">
-                  <div class="contact-fields">
+            <div formArrayName="contacts" class="space-y-4">
+              @for (contact of contactsArray.controls; track $index; let i = $index) {
+                <nz-card nzSize="small" [formGroupName]="i">
+                  <div class="grid grid-cols-2 gap-4">
                     <nz-form-item>
                       <nz-form-control>
                         <input nz-input formControlName="name" placeholder="Contact name">
@@ -468,31 +465,35 @@ export class PartnerListComponent {
                     
                     <nz-form-item>
                       <nz-form-control>
-                        <input nz-input formControlName="email" placeholder="Email">
+                        <input nz-input formControlName="email" placeholder="Email" type="email">
                       </nz-form-control>
                     </nz-form-item>
                     
                     <nz-form-item>
                       <nz-form-control>
-                        <input nz-input formControlName="role" placeholder="Role">
+                        <input nz-input formControlName="role" placeholder="Role/Title">
                       </nz-form-control>
                     </nz-form-item>
                     
                     <nz-form-item>
                       <nz-form-control>
-                        <label nz-checkbox formControlName="isPrimary">Primary Contact</label>
+                        <input nz-input formControlName="phone" placeholder="Phone (optional)">
                       </nz-form-control>
                     </nz-form-item>
                   </div>
                   
-                  <button nz-button nzType="text" nzDanger (click)="removeContact(i)">
-                    Remove
-                  </button>
+                  <div class="flex justify-between items-center mt-4">
+                    <label nz-checkbox formControlName="isPrimary">Primary Contact</label>
+                    <button nz-button nzType="text" nzDanger (click)="removeContact(i)" type="button">
+                      <nz-icon nzType="delete"></nz-icon>
+                      Remove
+                    </button>
+                  </div>
                 </nz-card>
-              </div>
+              }
             </div>
             
-            <button nz-button nzType="dashed" (click)="addContact()">
+            <button nz-button nzType="dashed" (click)="addContact()" type="button" class="w-full mt-4">
               <nz-icon nzType="plus"></nz-icon>
               Add Contact
             </button>
@@ -515,71 +516,122 @@ export class PartnerListComponent {
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    ReactiveFormsModule,
-    NzCardModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule,
-    NzButtonModule,
-    NzCheckboxModule,
-    NzIconModule,
+    ReactiveFormsModule, NzCardModule, NzFormModule, NzInputModule,
+    NzSelectModule, NzButtonModule, NzCheckboxModule, NzIconModule,
     CommonModule
   ]
 })
-export class PartnerFormComponent {
+export class PartnerFormComponent implements OnInit {
+  // Signals for state management
+  loading = signal(false);
+  isEdit = signal(false);
+  partnerId = signal<string | null>(null);
+
+  // Static data
+  industries = ['Technology', 'Finance', 'Healthcare', 'Manufacturing', 'Retail', 'Education'];
+
+  // Reactive form
   form = this.fb.group({
     companyName: ['', Validators.required],
     industry: ['', Validators.required],
     website: [''],
     address: [''],
-    contacts: this.fb.array([])
+    contacts: this.fb.array([this.createContactForm()]) // Start with one contact
   });
-
-  loading = signal(false);
-  isEdit = signal(false);
 
   constructor(
     private fb: FormBuilder,
-    private createPartnerUseCase: CreatePartnerUseCase,
-    private updatePartnerUseCase: UpdatePartnerUseCase,
+    private partnerService: PartnerFirebaseService,
     private router: Router,
+    private route: ActivatedRoute,
     private message: NzMessageService
   ) {}
+
+  async ngOnInit() {
+    // Check if editing existing partner
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEdit.set(true);
+      this.partnerId.set(id);
+      await this.loadPartner(id);
+    }
+  }
 
   get contactsArray() {
     return this.form.get('contacts') as FormArray;
   }
 
-  addContact() {
-    const contactForm = this.fb.group({
+  private createContactForm() {
+    return this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       role: ['', Validators.required],
       phone: [''],
       isPrimary: [false]
     });
-    
-    this.contactsArray.push(contactForm);
+  }
+
+  addContact() {
+    this.contactsArray.push(this.createContactForm());
   }
 
   removeContact(index: number) {
-    this.contactsArray.removeAt(index);
+    if (this.contactsArray.length > 1) {
+      this.contactsArray.removeAt(index);
+    } else {
+      this.message.warning('At least one contact is required');
+    }
+  }
+
+  private async loadPartner(id: string) {
+    try {
+      const partner = await this.partnerService.getPartnerById(id);
+      if (partner) {
+        // Clear existing contacts
+        while (this.contactsArray.length) {
+          this.contactsArray.removeAt(0);
+        }
+        
+        // Add partner contacts
+        partner.contacts.forEach(contact => {
+          this.contactsArray.push(this.fb.group({
+            name: [contact.name, Validators.required],
+            email: [contact.email, [Validators.required, Validators.email]],
+            role: [contact.role, Validators.required],
+            phone: [contact.phone || ''],
+            isPrimary: [contact.isPrimary]
+          }));
+        });
+
+        // Patch form values
+        this.form.patchValue({
+          companyName: partner.companyName,
+          industry: partner.industry,
+          website: partner.website || '',
+          address: partner.address || ''
+        });
+      }
+    } catch (error) {
+      this.message.error('Failed to load partner data');
+      this.router.navigate(['/partners']);
+    }
   }
 
   async onSubmit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.loading.set(true);
     try {
       const formValue = this.form.value;
       
       if (this.isEdit()) {
-        const command = new UpdatePartnerCommand(formValue);
-        await this.updatePartnerUseCase.execute(command);
+        await this.partnerService.updatePartner(this.partnerId()!, formValue);
         this.message.success('Partner updated successfully');
       } else {
-        const command = new CreatePartnerCommand(formValue);
-        await this.createPartnerUseCase.execute(command);
+        await this.partnerService.createPartner(formValue);
         this.message.success('Partner created successfully');
       }
       
@@ -589,6 +641,10 @@ export class PartnerFormComponent {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  cancel() {
+    this.router.navigate(['/partners']);
   }
 }
 ```
@@ -795,21 +851,36 @@ describe('PartnerListComponent', () => {
 4. **Lazy Loading**: Route-based code splitting
 5. **Caching**: Repository-level caching for frequently accessed data
 
-### Bundle Optimization
+### Bundle Optimization & Routing
 
 ```typescript
-// Lazy-loaded routes
-const routes: Routes = [
+// business-partner.routes.ts - Lazy-loaded routes
+export const BUSINESS_PARTNER_ROUTES: Routes = [
   {
-    path: 'partners',
+    path: '',
     loadComponent: () => import('./presentation/pages/partner-list/partner-list.component')
       .then(m => m.PartnerListComponent)
   },
   {
-    path: 'partners/create',
+    path: 'create',
     loadComponent: () => import('./presentation/pages/partner-form/partner-form.component')
       .then(m => m.PartnerFormComponent)
+  },
+  {
+    path: ':id/edit',
+    loadComponent: () => import('./presentation/pages/partner-form/partner-form.component')
+      .then(m => m.PartnerFormComponent)
+  },
+  {
+    path: ':id',
+    loadComponent: () => import('./presentation/pages/partner-detail/partner-detail.component')
+      .then(m => m.PartnerDetailComponent)
   }
+];
+
+// Simplified providers
+export const BUSINESS_PARTNER_PROVIDERS = [
+  PartnerFirebaseService
 ];
 ```
 
@@ -843,5 +914,14 @@ service cloud.firestore {
   }
 }
 ```
+
+### Simplified Architecture Benefits
+
+1. **Reduced Boilerplate**: Direct Firebase integration eliminates repository abstractions
+2. **Signal-Driven**: Reactive state management without complex RxJS operators
+3. **Component-Centric**: Business logic lives close to UI components
+4. **Real-time Updates**: Automatic UI updates through Firebase real-time listeners
+5. **Type Safety**: Strong TypeScript typing throughout the application
+6. **Performance**: OnPush change detection with computed signals for optimal rendering
 
 This design provides a comprehensive, scalable, and maintainable solution for business partner management while adhering to Angular 20 best practices and minimalist design principles.
