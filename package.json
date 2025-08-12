@@ -50,6 +50,7 @@
     "@angular/platform-browser": "^20.1.2",
     "@angular/platform-browser-dynamic": "^20.1.2",
     "@angular/router": "^20.1.2",
+    "@ant-design/icons-angular": "^20.0.0",
     "@delon/abc": "^20.0.1",
     "@delon/acl": "^20.0.1",
     "@delon/auth": "^20.0.1",

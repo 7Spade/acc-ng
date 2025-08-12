@@ -40,6 +40,9 @@ import { AUTH_PROVIDERS } from './domains/auth/auth.providers';
 import { BUSINESS_PARTNER_PROVIDERS } from './domains/business-partner/business-partner.providers';
 import { CONTRACT_MANAGEMENT_PROVIDERS } from './domains/contract-management';
 import { routes } from './routes/routes';
+import { PERSONNEL_MANAGEMENT_PROVIDERS } from './domains/personnel-management';
+import { PROJECT_MANAGEMENT_PROVIDERS } from './domains/project-management';
+import { SITE_MANAGEMENT_PROVIDERS } from './domains/site-management';
 
 const defaultLang: AlainProvideLang = {
   abbr: 'zh-CN',
@@ -82,6 +85,9 @@ const providers: Array<Provider | EnvironmentProviders> = [
   ...CONTRACT_MANAGEMENT_PROVIDERS,
   ...BUSINESS_PARTNER_PROVIDERS,
   ...AUTH_PROVIDERS,
+  ...PERSONNEL_MANAGEMENT_PROVIDERS,
+  ...PROJECT_MANAGEMENT_PROVIDERS,
+  ...SITE_MANAGEMENT_PROVIDERS,
   ...(environment.providers || [])
 ];
 

@@ -125,7 +125,10 @@ export class TabService {
       '/dashboard/contract-management': { title: '合約管理', icon: 'file-text', closable: true },
       '/dashboard/task-management': { title: '任務管理', icon: 'check-square', closable: true },
       '/dashboard/budget-management': { title: '預算管理', icon: 'dollar', closable: true },
-      '/dashboard/business-partner': { title: '合作夥伴', icon: 'user', closable: true }
+      '/dashboard/business-partner': { title: '合作夥伴', icon: 'user', closable: true },
+      '/dashboard/personnel-management': { title: '人員管理', icon: 'user', closable: true },
+      '/dashboard/project-management': { title: '專案管理', icon: 'project', closable: true },
+      '/dashboard/site-management': { title: '場地管理', icon: 'environment', closable: true }
     };
 
     return routeMap[url] || { title: '新頁面', closable: true };

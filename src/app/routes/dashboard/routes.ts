@@ -8,6 +8,9 @@ import { BudgetListComponent } from '../../domains/budget-management';
 import { CompanyListComponent } from '../../domains/business-partner';
 import { ContractListComponent, ContractCreateComponent } from '../../domains/contract-management';
 import { TaskListComponent } from '../../domains/task-management';
+import { PersonnelListComponent } from '../../domains/personnel-management';
+import { ProjectListComponent } from '../../domains/project-management';
+import { SiteListComponent } from '../../domains/site-management';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'v1', pathMatch: 'full' },
@@ -24,5 +27,8 @@ export const routes: Routes = [
   },
   { path: 'task-management', component: TaskListComponent },
   { path: 'budget-management', component: BudgetListComponent },
-  { path: 'business-partner', component: CompanyListComponent }
+  { path: 'business-partner', component: CompanyListComponent },
+  { path: 'personnel-management', component: PersonnelListComponent },
+  { path: 'project-management', component: ProjectListComponent },
+  { path: 'site-management', component: SiteListComponent }
 ];

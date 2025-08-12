@@ -9735,6 +9735,7 @@ __metadata:
     "@angular/platform-browser": "npm:^20.1.2"
     "@angular/platform-browser-dynamic": "npm:^20.1.2"
     "@angular/router": "npm:^20.1.2"
+    "@ant-design/icons-angular": "npm:^20.0.0"
     "@delon/abc": "npm:^20.0.1"
     "@delon/acl": "npm:^20.0.1"
     "@delon/auth": "npm:^20.0.1"

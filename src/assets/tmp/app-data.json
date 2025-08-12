@@ -59,6 +59,21 @@
               "text": "合作夥伴",
               "link": "/dashboard/business-partner",
               "i18n": "menu.dashboard.business-partner"
+            },
+            {
+              "text": "人員管理",
+              "link": "/dashboard/personnel-management",
+              "i18n": "menu.dashboard.personnel-management"
+            },
+            {
+              "text": "專案管理",
+              "link": "/dashboard/project-management",
+              "i18n": "menu.dashboard.project-management"
+            },
+            {
+              "text": "場地管理",
+              "link": "/dashboard/site-management",
+              "i18n": "menu.dashboard.site-management"
             }
           ]
         },
