@@ -1,19 +1,22 @@
 {
-  "menu": {
-    "dashboard": {
-      "": "仪表盘",
-      "v1": "默认页",
-      "analysis": "分析页",
-      "monitor": "监控页",
-      "workplace": "工作台"
-    }
-  },
   "menu.search.placeholder": "搜索：员工、文件、照片等，按 F1 可触发",
   "menu.fullscreen": "全屏",
   "menu.fullscreen.exit": "退出全屏",
   "menu.clear.local.storage": "清理本地缓存",
   "menu.lang": "语言",
   "menu.main": "主导航",
+  "menu.dashboard": "仪表盘",
+  "menu.dashboard.v1": "默认页",
+  "menu.dashboard.analysis": "分析页",
+  "menu.dashboard.monitor": "监控页",
+  "menu.dashboard.workplace": "工作台",
+  "menu.dashboard.contract-management": "合约管理",
+  "menu.dashboard.task-management": "任务管理",
+  "menu.dashboard.budget-management": "预算管理",
+  "menu.dashboard.business-partner": "合作伙伴",
+  "menu.dashboard.personnel-management": "人员管理",
+  "menu.dashboard.project-management": "项目管理",
+  "menu.dashboard.site-management": "场地管理",
   "menu.shortcut": "快捷菜单",
   "menu.widgets": "小部件",
   "menu.alain": "NG-ALAIN",

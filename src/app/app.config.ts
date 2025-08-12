@@ -45,7 +45,7 @@ import { PROJECT_MANAGEMENT_PROVIDERS } from './domains/project-management';
 import { SITE_MANAGEMENT_PROVIDERS } from './domains/site-management';
 
 const defaultLang: AlainProvideLang = {
-  abbr: 'zh-CN',
+  abbr: 'zh-TW',
   ng: ngLang,
   zorro: zorroLang,
   date: dateLang,

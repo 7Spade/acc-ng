@@ -28,7 +28,7 @@ interface LangConfigData {
   delon: NzSafeAny;
 }
 
-const DEFAULT = 'zh-CN';
+const DEFAULT = 'zh-TW';
 const LANGS: Record<string, LangConfigData> = {
   'zh-CN': {
     text: '简体中文',
