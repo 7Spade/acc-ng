@@ -1,2 +1,2 @@
 // Domain Exceptions
-// Export domain exceptions when they are created
+export * from './partner.exceptions';

@@ -1,2 +1,2 @@
 // Domain Entities
-// Export entities when they are created
+export * from './partner.entity';

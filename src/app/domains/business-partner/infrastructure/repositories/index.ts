@@ -1,2 +1,2 @@
 // Infrastructure Repository Implementations
-// Export repository implementations when they are created
+export * from './partner-firebase.service';

@@ -1,2 +1,3 @@
 // Presentation Pages
-// Export pages when they are created
+export * from './partner-list/partner-list.component';
+export * from './partner-form/partner-form.component';
